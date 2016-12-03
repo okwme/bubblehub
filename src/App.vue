@@ -49,7 +49,10 @@ export default {
   },
   data () {
     return {
+      defaultPhoto: '',
+      radius: 5,
       chatVisible: false,
+      locKey: false,
       locSlug: false,
       loc: false,
       user: false,
@@ -63,7 +66,9 @@ export default {
     }
   },
   firebase: {
-    users: db.ref('users')
+    users: db.ref('users'),
+    allChats: db.ref('chats'),
+    locs: db.ref('locs')
     // chats: db.ref('chats/main')
     // user: firebase.auth().currentUser
   },
@@ -84,22 +89,8 @@ export default {
         return this.users[meID]
       }
     }
-    // loc () {
-
-    //   return this.locSlug &&
-    //   this.loc = {
-    //       slug: this.slugify(loc.name),
-    //       name: loc.name,
-    //       lat: loc.latitude,
-    //       long: loc.longitude,
-    //       country_code: loc.country_code
-    //     }
-    // }
   },
   watch: {
-    loc () {
-      console.log(this.loc)
-    },
     user () {
       this.checkReady()
     },
@@ -130,6 +121,51 @@ export default {
     })
   },
   methods: {
+    getPhoto (loc, callback = function () {}) {
+      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&nojsoncallback=1').then(function (successResult) {
+        console.log(successResult)
+        if (successResult.data.photos.photo.length === 0) {
+          callback(this.defaultPhoto)
+        } else {
+          var photo = successResult.data.photos.photo.shift()
+          var photoId = photo.id
+          this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
+            var photo = successData.data.sizes.size.pop()
+            console.log(photo)
+            callback(photo.source)
+          }, function (errorResult) {
+            console.log(errorResult)
+          })
+        }
+      }, function (errorResult) {
+        console.log(errorResult)
+      })
+    },
+    makeLoc (loc) {
+      var vm = this
+      this.getPhoto(loc, function (photo) {
+        var newLoc = {
+          key: vm.locSlug,
+          slug: vm.locSlug,
+          name: loc.name,
+          lat: loc.latitude,
+          long: loc.longitude,
+          country_code: loc.country_code,
+          photo: photo,
+          entities: [],
+          users: []
+        }
+        vm.locKey = vm.$firebaseRefs.locs.push(newLoc).key
+        vm.loc = vm.findLoc()
+      })
+    },
+    findLoc () {
+      var vm = this
+      var index = this.locs.findIndex(function (item) {
+        return item.slug === vm.locSlug
+      })
+      return index > -1 && this.locs[index]
+    },
     checkReady () {
       console.log('check ready')
       if (this.airports.length > 0 && this.stations.length > 0 && this.user && this.long && !this.checkingReady) {
@@ -178,9 +214,13 @@ export default {
         this.error = 'Sorry, Not close enough to a point of interest : ('
       } else {
         var loc = chosenList[myLocId]
-        this.locSlug = this.slugify(loc.name)
+        vm.locSlug = this.slugify(loc.name)
+        this.loc = this.findLoc()
+        if (!this.loc) {
+          this.makeLoc(loc)
+        }
+
         vm.$bindAsArray('chats', db.ref('chats/' + this.locSlug))
-        vm.$bindAsObject('loc', db.ref('locs/' + this.locSlug))
       }
     },
     getAirports () {
@@ -214,7 +254,6 @@ export default {
         }
       }
       this.$http.get('https://xap.ix-io.net/api/v1/distribusion/stations?fields%5Bstations%5D=iata_code%2Ctime_zone%2Ccountry_code%2Ccity_name%2Clongitude%2Clatitude%2Cname%2Cx_id&sort=x_id&page%5Bnumber%5D=1&page%5Bsize%5D=10000', options).then(function (successResult) {
-        console.log(successResult)
         vm.stations = successResult.data.stations
       }, function (errorResult) {
         console.log(errorResult)
