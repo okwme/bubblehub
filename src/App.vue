@@ -5,6 +5,19 @@
       {{error}}
     </div>
     <div v-else>
+      <a
+      v-if='loc'
+      id='showChat' 
+      @click.prevent='chatVisible = !chatVisible'>
+        Chat {{chatVisible ? 'Close' : 'Open'}}
+      </a>
+
+      <chat 
+      v-if='loc'
+      v-bind:loc='loc'
+      v-bind:user='user'
+      v-bind:chats='chats'
+      v-bind:chatVisible='chatVisible'></chat>
 
       <div v-if='loc'>
         <h1>
@@ -17,18 +30,7 @@
       <div v-else>
         <h1>Please wait while we locate you</h1>
       </div>
-      <a
-      v-if='loc'
-      id='showChat' 
-      @click.prevent='chatVisible = !chatVisible'>
-        Chat {{chatVisible ? 'Close' : 'Open'}}
-      </a>
-      <chat 
-      v-if='loc'
-      v-bind:loc='loc'
-      v-bind:user='user'
-      v-bind:chats='chats'
-      v-bind:chatVisible='chatVisible'></chat>
+
     </div>
   </div>
 </template>
@@ -37,12 +39,12 @@
 import firebase from './firebase'
 const db = firebase.database()
 import Chat from './components/Chat'
-import VR from './components/VR'
+// import VR from './components/VR'
 
 export default {
   name: 'app',
   components: {
-    VR,
+    // VR,
     Chat
   },
   data () {
@@ -53,12 +55,14 @@ export default {
       long: false,
       lat: false,
       error: false,
+      chats: [],
       airports: [],
       stations: []
     }
   },
   firebase: {
     users: db.ref('users')
+    // chats: db.ref('chats/main')
     // user: firebase.auth().currentUser
   },
   computed: {
@@ -84,12 +88,16 @@ export default {
       this.checkReady()
     },
     long () {
+      console.log('stations changed')
+      console.log(this.long)
       this.checkReady()
     },
     airports () {
       this.checkReady()
     },
     stations () {
+      console.log('stations changed')
+      console.log(this.stations)
       this.checkReady()
     }
   },
@@ -169,7 +177,7 @@ export default {
           long: loc.longitude,
           country_code: loc.country_code
         }
-        vm.$bindAsArray('chats', firebase.child('chats/' + this.loc.slug))
+        vm.$bindAsArray('chats', db.ref('chats/' + this.loc.slug))
         // this.$bindAsObject('chats', firebase.child('chats/' + this.loc.slug))
       }
     },

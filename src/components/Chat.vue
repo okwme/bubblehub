@@ -119,14 +119,19 @@ export default {
 
 <style lang="scss" scoped>
 #chat{
-  position:relative;
+  transform: translateX(-100%);
+  position:absolute;
+  top:0px;
+  left:0px;
   width:100%;
   height:100vh;
   transition: all 500ms ease;
-  margin-left:-100%;
+  background-color: white;
+  // margin-left:-100%;
   border-right:1px solid black;
   &.visible{
-    margin-left:0;
+    // margin-left:0;
+    transform: translateX(0%);
   }
    > div{
     position:absolute;
