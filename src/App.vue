@@ -54,7 +54,7 @@ export default {
       spoof: false,
       sampleCities: sampleCities,
       defaultPhoto: '',
-      radius: 5,
+      radius: 10,
       chatVisible: false,
       locKey: false,
       locSlug: false,
@@ -133,7 +133,7 @@ export default {
           var photo = successResult.data.photos.photo.shift()
           var photoId = photo.id
           this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
-            var photo = successData.data.sizes.size.pop()
+            var photo = successData.data.sizes.size[successData.data.sizes.size.length - 2]
             callback(photo.source)
           }, function (errorResult) {
             console.log(errorResult)
@@ -143,16 +143,30 @@ export default {
         console.log(errorResult)
       })
     },
+    generateColor (str) {
+      var hash = 0
+      for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+      }
+      var colour = '#'
+      for (i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 0xFF
+        colour += ('00' + value.toString(16)).substr(-2)
+      }
+      return colour
+    },
     makeLoc (loc) {
       var vm = this
       this.getPhoto(loc, function (photo) {
         var newLoc = {
+          type: loc.type,
           key: vm.locSlug,
           slug: vm.locSlug,
           name: loc.name,
           lat: loc.latitude,
           long: loc.longitude,
           country_code: loc.country_code,
+          color: vm.generateColor(vm.locSlug),
           photo: photo,
           entities: [],
           users: []
@@ -201,17 +215,20 @@ export default {
         return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
       })
       if (myLocId > -1) {
+        var type = 'airport'
         var chosenList = this.airports
       } else {
         myLocId = this.stations.findIndex(function (item) {
           return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
         })
+        type = 'station'
         chosenList = this.stations
       }
       if (myLocId < 0) {
         this.error = 'Sorry, Not close enough to a point of interest : ('
       } else {
         var loc = chosenList[myLocId]
+        loc.type = type
         vm.locSlug = this.slugify(loc.name)
         this.loc = this.findLoc()
         if (!this.loc) {
