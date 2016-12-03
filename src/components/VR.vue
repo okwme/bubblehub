@@ -28,23 +28,70 @@
       </a-entity>
 
       <!-- Background / loc.photo -->
-      <a-sky :src="loc.photo"></a-sky>
+      <a-sky :src="photo"></a-sky>
 
     </a-scene>
   </div>
 </template>
 
 <script>
+/* global Image:true */
+/* eslint no-undef: "error" */
+
 const AFRAME = require('aframe')
 export default{
   name: 'VR',
   props: ['loc'],
   data () {
     return {
-      animOn: true
+      topAmount: 5,
+      animOn: true,
+      currentPhotoId: false,
+      photo: 'loading.jpg'
+    }
+  },
+  mounted () {
+    this.switchPhoto()
+  },
+  methods: {
+    switchPhoto () {
+      var vm = this
+      var photoId = this.loc.photos[Math.floor(Math.random() * this.topAmount)].id
+      if (photoId === this.currentPhotoId) {
+        this.switchPhoto()
+      } else {
+        this.getFlick(photoId, function (url) {
+          console.log(url)
+          var img = new Image()
+          console.log(img)
+          img.onload = function () {
+            vm.photo = url
+          }
+          img.src = url
+        })
+      }
+    },
+    getFlick (photoId, callback = function () {}) {
+      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
+        var photo = false
+        successData.data.sizes.size.reverse().forEach(function (element, int) {
+          if (!photo && element.width <= 2050) {
+            photo = element
+          }
+        })
+        if (!photo) {
+          console.log('coldnt find one over 2000')
+          photo = successData.data.sizes.size.pop()
+        }
+        console.log(photo)
+        callback(photo.source)
+      }, function (errorResult) {
+        console.log(errorResult)
+      })
     }
   },
   created () {
+    var vm = this
     // console.log(AFRAME.version)
     AFRAME.registerComponent('toy-color', {
       init: function () {
@@ -58,6 +105,7 @@ export default{
           const randomIndex = Math.floor(Math.random() * COLORS.length)
           this.setAttribute('material', 'color', COLORS[randomIndex])
           console.log('I was clicked!')
+          vm.switchPhoto()
         })
       }
     })
