@@ -35,6 +35,7 @@ export default{
   props: ['loc'],
   data () {
     return {
+      eqirectangularGroupId: '44671723@N00',
       bgcolor: false
       entities:[],
       roominfo: false

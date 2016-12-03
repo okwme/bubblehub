@@ -50,6 +50,7 @@ export default {
   data () {
     return {
       chatVisible: false,
+      locSlug: false,
       loc: false,
       user: false,
       long: false,
@@ -82,22 +83,32 @@ export default {
         return this.users[meID]
       }
     }
+    // loc () {
+
+    //   return this.locSlug &&
+    //   this.loc = {
+    //       slug: this.slugify(loc.name),
+    //       name: loc.name,
+    //       lat: loc.latitude,
+    //       long: loc.longitude,
+    //       country_code: loc.country_code
+    //     }
+    // }
   },
   watch: {
+    loc () {
+      console.log(this.loc)
+    },
     user () {
       this.checkReady()
     },
     long () {
-      console.log('stations changed')
-      console.log(this.long)
       this.checkReady()
     },
     airports () {
       this.checkReady()
     },
     stations () {
-      console.log('stations changed')
-      console.log(this.stations)
       this.checkReady()
     }
   },
@@ -149,9 +160,9 @@ export default {
       // var longRange = {min: 0, max: 0}
       // var latRange = {min: 0, max: 0}
       var myLocId = this.airports.findIndex(function (item) {
-        console.log('distance between here and ' + item.name)
-        console.log(vm.lat + ',' + vm.long + ' & ' + item.latitude + ',' + item.longitude)
-        console.log(vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude))
+        // console.log('distance between here and ' + item.name)
+        // console.log(vm.lat + ',' + vm.long + ' & ' + item.latitude + ',' + item.longitude)
+        // console.log(vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude))
         return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
         // return (item.longitude < longRange.max || item.longitude > longRange.min) &&
         // (item.latitude < latRange.max || item.latitude > latRange.min)
@@ -170,15 +181,9 @@ export default {
         this.error = 'Sorry, Not close enough to a point of interest : ('
       } else {
         var loc = chosenList[myLocId]
-        this.loc = {
-          slug: this.slugify(loc.name),
-          name: loc.name,
-          lat: loc.latitude,
-          long: loc.longitude,
-          country_code: loc.country_code
-        }
-        vm.$bindAsArray('chats', db.ref('chats/' + this.loc.slug))
-        // this.$bindAsObject('chats', firebase.child('chats/' + this.loc.slug))
+        this.locSlug = this.slugify(loc.name)
+        vm.$bindAsArray('chats', db.ref('chats/' + this.locSlug))
+        // vm.$bindAsObject('loc', firebase.child('locs/' + this.locSlug))
       }
     },
     getAirports () {
