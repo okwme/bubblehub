@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- <VR :loc='loc'></VR> -->
     <div v-if='error'>
       {{error}}
     </div>
@@ -36,10 +37,12 @@
 import firebase from './firebase'
 const db = firebase.database()
 import Chat from './components/Chat'
+import VR from './components/VR'
 
 export default {
   name: 'app',
   components: {
+    VR,
     Chat
   },
   data () {
