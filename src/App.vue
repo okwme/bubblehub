@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <vr></vr>
     <div id='chats'>
       <div v-for="item in filteredItems">
         <a v-if='username === "admin"' @click.stop='removeItem(item[".key"])'>x</a>
@@ -15,11 +16,13 @@
 
 <script>
 import firebase from './firebase'
+import VR from './components/VR'
 const db = firebase.database()
 
 export default {
   name: 'app',
   components: {
+    VR
   },
   data () {
     return {
