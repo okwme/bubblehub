@@ -14,6 +14,8 @@
 </template>
 
 <script>
+// import firebase from '../firebase'
+// const db = firebase.database()
 export default {
 
   name: 'Chat',
@@ -25,7 +27,11 @@ export default {
       username: ''
     }
   },
+  firebase: {
+    // chats: db.ref('chats/' + this.loc.slug)
+  },
   props: [
+    'loc',
     'chats',
     'user',
     'chatVisible'
@@ -41,9 +47,15 @@ export default {
     },
     chatsLength () {
       return this.chats.length
+    },
+    displayName () {
+      return this.user.displayName
     }
   },
   watch: {
+    displayName () {
+      this.username = this.displayName
+    },
     currentMessage () {
       this.updateChat()
     },
@@ -55,6 +67,7 @@ export default {
   },
   mounted () {
     this.newChat()
+    this.username = this.user.displayName
   },
   methods: {
     scrollDown () {
@@ -78,13 +91,11 @@ export default {
     newChat () {
       // var vm = this
       this.currentMessage = ''
-      console.log(this)
       var chat = {
         username: this.username,
         msg: '',
         time: 0
       }
-      console.log(chat)
       this.currentKey = this.$parent.$firebaseRefs.chats.push(chat).key
     },
     updateChat () {
