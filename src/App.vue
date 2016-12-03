@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vr></vr>
+    <VR :loc='loc'></VR>
     <a id='showChat' @click.prevent='chatVisible = !chatVisible'>Chat {{chatVisible ? 'Close' : 'Open'}}</a>
     <chat 
     v-bind:user='user'
@@ -11,8 +11,8 @@
 
 <script>
 import firebase from './firebase'
-import VR from './components/VR'
 const db = firebase.database()
+import VR from './components/VR'
 import Chat from './Chat'
 
 export default {
@@ -23,8 +23,14 @@ export default {
   },
   data () {
     return {
-      chatVisible: true,
-      user: false
+      chatVisible: false,
+      user: false,
+      loc: {
+        roomInfo: {
+          bgColor: 'lightgray',
+        },
+        entities: [],
+      }
     }
   },
   firebase: {
