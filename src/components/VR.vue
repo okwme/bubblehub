@@ -2,10 +2,10 @@
   <div id="vr">
     <a-scene id="scene" ref="scene">
       <a-assets>
-          <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
-          <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
-          <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
-          <!--<img id="sky-src" :src="loc.photo">-->
+        <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
+        <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
+        <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
+        <img id="sky-src" :src="loc.photo">
       </a-assets>
       
 
@@ -29,7 +29,7 @@
       </a-entity>
 
       <!-- Background / loc.photo -->
-      <a-sky :src="loc.photo"></a-sky>
+      <a-sky src="sky-src"></a-sky>
 
     </a-scene>
   </div>
