@@ -53,7 +53,7 @@ export default {
       spoof: 'New York',
       sampleCities: sampleCities,
       defaultPhoto: '',
-      radius: 5,
+      radius: 10,
       chatVisible: false,
       locKey: false,
       locSlug: false,
