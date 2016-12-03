@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VR v-if="vrOn" :loc="loc"></VR>
+    <VR v-if="loc" :loc="loc"></VR>
     <div v-if='error'>
       {{error}}
     </div>
