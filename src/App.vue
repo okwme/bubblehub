@@ -6,7 +6,7 @@
     </div>
     <div v-else>
       <a
-      v-if='loc'
+      v-show='loc'
       id='showChat' 
       @click.prevent='chatVisible = !chatVisible'>
         Chat {{chatVisible ? 'Close' : 'Open'}}
@@ -51,7 +51,7 @@ export default {
   data () {
     return {
       vrOn: true,
-      spoof: 'New York',
+      spoof: false,
       sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 5,

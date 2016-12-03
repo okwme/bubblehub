@@ -5,6 +5,7 @@
           <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
           <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
           <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
+          <!--<img id="sky-src" :src="loc.photo">-->
       </a-assets>
       
 
@@ -41,7 +42,7 @@ export default{
   props: ['loc'],
   data () {
     return {
-      animOn: true
+      animOn: false
     }
   },
   created () {
