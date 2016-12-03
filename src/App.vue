@@ -56,6 +56,7 @@ export default {
       long: false,
       lat: false,
       error: false,
+      checkingReady: false,
       chats: [],
       airports: [],
       stations: []
@@ -130,7 +131,10 @@ export default {
   },
   methods: {
     checkReady () {
-      if (this.airports.length > 0 && this.stations.length > 0 && this.user && this.long && !this.loc) {
+      console.log('check ready')
+      if (this.airports.length > 0 && this.stations.length > 0 && this.user && this.long && !this.checkingReady) {
+        console.log('actually check ready')
+        this.checkingReady = true
         this.findMe()
       }
     },
@@ -156,24 +160,17 @@ export default {
       .replace(/-+$/, '')             // Trim - from end of text
     },
     findMe () {
+      console.log('find me')
       var vm = this
-      // var longRange = {min: 0, max: 0}
-      // var latRange = {min: 0, max: 0}
       var myLocId = this.airports.findIndex(function (item) {
-        // console.log('distance between here and ' + item.name)
-        // console.log(vm.lat + ',' + vm.long + ' & ' + item.latitude + ',' + item.longitude)
-        // console.log(vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude))
         return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
-        // return (item.longitude < longRange.max || item.longitude > longRange.min) &&
-        // (item.latitude < latRange.max || item.latitude > latRange.min)
       })
       if (myLocId > -1) {
         var chosenList = this.airports
       } else {
+        console.log('')
         myLocId = this.stations.findIndex(function (item) {
           return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
-          // return (item.longitude < longRange.max || item.longitude > longRange.min) &&
-          // (item.latitude < latRange.max || item.latitude > latRange.min)
         })
         chosenList = this.stations
       }
@@ -183,7 +180,7 @@ export default {
         var loc = chosenList[myLocId]
         this.locSlug = this.slugify(loc.name)
         vm.$bindAsArray('chats', db.ref('chats/' + this.locSlug))
-        // vm.$bindAsObject('loc', firebase.child('locs/' + this.locSlug))
+        vm.$bindAsObject('loc', db.ref('locs/' + this.locSlug))
       }
     },
     getAirports () {
