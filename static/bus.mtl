@@ -1,5 +1,5 @@
 # Blender MTL File: 'airplane.blend'
-# Material Count: 5
+# Material Count: 1
 
 newmtl None
 Ns 0
@@ -7,43 +7,4 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
-illum 2
-
-newmtl _1694
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd /Users/billy/Downloads/bus/model/_1694.jpg
-
-newmtl _381_PR_Buk_Balvaria
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd /Users/billy/Downloads/bus/model/_381_PR_Buk_Balvaria.jpg
-
-newmtl _381_PR_Buk_Balvaria_0
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd /Users/billy/Downloads/bus/model/_381_PR_Buk_Balvaria_0.jpg
-
-newmtl material
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.536471 0.552157 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
 illum 2

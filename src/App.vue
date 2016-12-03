@@ -167,9 +167,7 @@ export default {
       return index > -1 && this.locs[index]
     },
     checkReady () {
-      console.log('check ready')
       if (this.airports.length > 0 && this.stations.length > 0 && this.user && this.long && !this.checkingReady) {
-        console.log('actually check ready')
         this.checkingReady = true
         this.findMe()
       }
@@ -196,7 +194,6 @@ export default {
       .replace(/-+$/, '')             // Trim - from end of text
     },
     findMe () {
-      console.log('find me')
       var vm = this
       var myLocId = this.airports.findIndex(function (item) {
         return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
