@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VR v-if="loc" :loc="loc"></VR>
+    <VR :loc="loc"></VR>
     <div v-if='error'>
       {{error}}
     </div>
@@ -20,12 +20,12 @@
       v-bind:chatVisible='chatVisible'></chat>
 
       <div v-if='loc'>
-        <h1>
-        WILKOMMEN BEI:
-        </h1>
         <h2>
-          {{loc.name}}, {{loc.country_code}}
+        Welcome to
         </h2>
+        <h1>
+          {{loc.name}}, {{loc.country_code}}
+        </h1>
       </div>
       <div v-else>
         <h1>Please wait while we locate you</h1>
@@ -40,6 +40,7 @@ import firebase from './firebase'
 const db = firebase.database()
 import Chat from './components/Chat'
 import VR from './components/VR'
+import sampleCities from './sampleCities'
 
 export default {
   name: 'app',
@@ -50,6 +51,8 @@ export default {
   data () {
     return {
       vrOn: true,
+      spoof: 'New York',
+      sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 5,
       chatVisible: false,
@@ -124,7 +127,6 @@ export default {
   methods: {
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&nojsoncallback=1').then(function (successResult) {
-        console.log(successResult)
         if (successResult.data.photos.photo.length === 0) {
           callback(this.defaultPhoto)
         } else {
@@ -132,7 +134,6 @@ export default {
           var photoId = photo.id
           this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
             var photo = successData.data.sizes.size.pop()
-            console.log(photo)
             callback(photo.source)
           }, function (errorResult) {
             console.log(errorResult)
@@ -202,7 +203,6 @@ export default {
       if (myLocId > -1) {
         var chosenList = this.airports
       } else {
-        console.log('')
         myLocId = this.stations.findIndex(function (item) {
           return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
         })
@@ -259,17 +259,26 @@ export default {
     },
     getLocation () {
       var vm = this
-      navigator.geolocation.getCurrentPosition(function (position) {
-        if (position.coords) {
-          vm.lat = position.coords.latitude
-          vm.long = position.coords.longitude
-        } else {
-          vm.getIPLocation()
+      if (this.spoof) {
+        var index = this.sampleCities.findIndex(function (city) {
+          return city.name === vm.spoof
+        })
+        if (index > -1) {
+          vm.lat = this.sampleCities[index].lat
+          vm.long = this.sampleCities[index].long
         }
-        vm.location = position
-      }, function (errorResult) {
-        vm.getIPLocation()
-      })
+      } else {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          if (position.coords) {
+            vm.lat = position.coords.latitude
+            vm.long = position.coords.longitude
+          } else {
+            vm.getIPLocation()
+          }
+        }, function (errorResult) {
+          vm.getIPLocation()
+        })
+      }
     },
     getIPLocation () {
       // var vm = this
