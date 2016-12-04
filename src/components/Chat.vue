@@ -82,13 +82,8 @@ export default {
       if (user) {
         var key = this.$parent.getUserKey()
         if (!key) {
-          console.log('no key')
-          console.log(key)
-          console.log(this)
           return
         }
-        console.log(key)
-        console.log(key)
         var updates = {}
         updates[key + '/username'] = vm.username
         this.$parent.$firebaseRefs.users.update(updates)
