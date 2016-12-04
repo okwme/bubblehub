@@ -3,7 +3,7 @@
     <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{locType}}</p></div></header>
     <ul class="h3">
       <li v-for="user in userlist" 
-      @click="showProfile()"      
+      @click="showProfile(user['.key'])"      
       >
         <img src="/static/icons/log.svg"><span>{{user.username}} ({{tally(user)}})</span>
       </li>
@@ -16,8 +16,9 @@ export default{
   name: 'Location',
   props: ['loc', 'users'],
   methods: {
-    showProfile: function () {
+    showProfile: function (key) {
       console.log('show')
+      this.$parent.profileId = key
       this.$parent.showProfile()
     },
     tally (user) {
