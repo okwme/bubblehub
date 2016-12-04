@@ -618,7 +618,7 @@ body{
   position:fixed;
   bottom:0; left:0; width:100%;
   padding:1em 1rem;
-  box-shadow:0 -2px 6px rgba(0,0,0,.5);
+  box-shadow:0 -1px 4px rgba(0,0,0,.25);
   background:white;
 }
 
@@ -637,6 +637,7 @@ body{
 
 .modal{
   transition: opacity 400ms, transform 400ms, visibility 0s 409ms;
+  z-index:50;
   opacity:0;
   visibility: hidden;
   transform:translateY(1em);
