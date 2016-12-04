@@ -114,7 +114,7 @@ export default {
       // this.$parent.showMessage(e.target.title, 2000)
       // add Class
       e.target.setAttribute('data-flipped', true)
-      setTimeout(() => e.target.setAttribute('data-flipped', false), 1000)
+      setTimeout(() => e.target.setAttribute('data-flipped', false), 550)
     }
   }
 }
@@ -172,10 +172,10 @@ export default {
         top:0; left:0; width:100%; height:100%;
         background:rgba(0,0,0,.5);
         opacity:0;
-        transition:opacity 125ms;
+        transition:opacity 250ms;
       }
       transform-style: preserve-3d;
-      transition: transform 250ms;
+      transition: transform 500ms;
       &[data-flipped="true"]{
         transform:rotateX(180deg);
         &:after{
