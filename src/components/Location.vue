@@ -1,11 +1,15 @@
 <template>
   <section id="log">
-    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{locType}}</p></div></header>
+    <header class="profile-header">
+      <div>
+        <div v-show="loc" class="swatch" :style="{backgroundColor: loc.color}"></div>
+        <h1 class="h2">{{loc.name}}</h1>
+        <p>{{locType}}</p>
+      </div>
+    </header>
     <ul class="h3">
-      <li v-for="user in userlist" 
-      @click="showProfile(user['.key'])"      
-      >
-        <img src="/static/icons/log.svg"><span>{{user.username}} ({{tally(user)}})</span>
+      <li v-for="user in userlist" @click="showProfile(user['.key'])">
+        <img src="/static/icons/log.svg"><span>{{user.username}} <sup>{{tally(user)}}</sup></span>
       </li>
     </ul>
   </section>
@@ -68,9 +72,17 @@ export default{
     background-color:rgba(0,0,0,.25);
   }
 
-  header p{
-    text-transform:capitalize;
-    margin-top: .5em;
+  header {
+    .swatch{
+      font-size:3em;
+    }
+    h1{
+      margin-top: 1em;
+    }
+    p{
+      text-transform:capitalize;
+      margin-top: .5em;
+    }
   }
 
   ul{
@@ -84,6 +96,10 @@ export default{
       img{
         display: inline;
         margin-right: 2rem;
+      }
+      sup{
+        font-weight: normal;
+        font-size: .75em;
       }
     }
   }
