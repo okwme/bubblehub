@@ -16,7 +16,7 @@
           <img src="/static/icons/log.svg">
         </a>
         <a id="backHome" v-show="viewing!=='home'" @click='view("home")' class="ui-btn">
-          <img src="/static/icons/arrow-r.svg">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <polyline fill="none" stroke="black" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="9,2 23,16 9,30 " transform="translate(0, 0)" stroke-linejoin="miter"></polyline> </svg>
         </a>
 
         <div v-if='loc'>
@@ -39,6 +39,7 @@
           v-bind:chatVisible='chatVisible'></chat>
 
       <profile :profileVisible="profileVisible"></profile>
+      <location :loc="loc"></location>
 
       <div id="message" ref="message" :class="{'visible': message.visible }">{{ message.text }}</div>
 
@@ -53,13 +54,15 @@ import Chat from './components/Chat'
 import VR from './components/VR'
 import sampleCities from './sampleCities'
 import Profile from './components/Profile'
+import Location from './components/Location'
 
 export default {
   name: 'app',
   components: {
     VR,
     Chat,
-    Profile
+    Profile,
+    Location
   },
   data () {
     return {
@@ -344,12 +347,14 @@ export default {
 </script>
 
 <style lang="scss">
+
 *{
   &, &:after, &:before{
     margin:0; padding:0;
     box-sizing: border-box;
   }
 }
+
 html{
   font-size:12px;
 }
@@ -361,7 +366,17 @@ body{
 }
 .h1{
   font-size:2.5em;
+  font-weight: bolder;
 }
+.h2{
+  font-size:1.75em;
+  font-weight: bolder;
+}
+.h3{
+  font-size:1.25em;
+  font-weight: bolder;
+}
+
 #app {
 
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -396,6 +411,7 @@ body{
   }
 }
 
+// ui
 .ui-btn{
   padding:1rem;
   position:fixed;
@@ -426,6 +442,9 @@ body{
   [data-view="log"] &{
     left:0;
     transform:rotate(180deg);
+    svg *{
+      stroke:white;
+    }
   }
 }
 
@@ -447,5 +466,15 @@ body{
     transform:none;
     transition:opacity 400ms, transform 400ms, visibility 0s 0s;
   }
+}
+
+// helper classes
+.profile-header{
+  min-height:50vh;
+  padding:1em 1rem 1em;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  flex-wrap:wrap;
 }
 </style>

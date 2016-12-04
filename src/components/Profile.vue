@@ -1,7 +1,7 @@
 <template>
   <article id="profile" :class="{ 'visible' : profileVisible }">
     <a id="closeProfile" class="close ui-btn" @click="close()" title="Close Profile"><img src="/static/icons/arrow-r.svg"></a>
-    <h1 class="h1"><span>usermane</span></h1>
+    <h1 class="h1 profile-header"><span>You</span></h1>
     <ul>
       <li v-for="item in userCheckIns" @click="flip" :style="{backgroundColor:item.color, color:item.color}" :title="item.name"></li>
     </ul>
@@ -136,14 +136,6 @@ export default {
   transform:translateY(100%);
   &.visible{
     transform:translateY(0);
-  }
-
-  h1{
-    min-height:50vh;
-    padding:1em 1rem 1em;
-    display: flex;
-    align-items:center;
-    justify-content: center;
   }
 
   ul{
