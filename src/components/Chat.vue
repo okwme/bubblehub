@@ -69,6 +69,10 @@ export default {
   mounted () {
     this.newChat()
     this.username = this.user.displayName
+    if (!this.username) {
+      this.username = 'n00b-' + Math.floor(Math.random() * 999)
+      this.newName()
+    }
   },
   methods: {
     scrollDown () {
@@ -133,7 +137,7 @@ export default {
   top:0px;
   left:0px;
   width:100%;
-  height:100vh;
+  height:100%;
   transition: all 500ms ease;
   background-color: white;
   // margin-left:-100%;
