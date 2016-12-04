@@ -64,7 +64,7 @@ export default{
   },
   methods: {
     rand () {
-      return Math.floor(Math.random() * 3)
+      return Math.floor(Math.random() * 3) + 1
     },
     changePosition () {
       this.planePosition = this.rand() + ' ' + this.rand() + ' ' + this.rand()

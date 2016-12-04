@@ -53,7 +53,7 @@ export default {
   data () {
     return {
       vrOn: true,
-      spoof: 'New York',
+      spoof: 'Paris',
       sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 20,
@@ -87,7 +87,11 @@ export default {
       if (meID < 0 && this.user) {
         var me = {
           username: vm.user.displayName,
-          id: vm.user.uid
+          id: vm.user.uid,
+          locs: {
+            airports: [],
+            stations: []
+          }
         }
         this.$firebaseRefs.users.push(me)
         return me
@@ -127,8 +131,76 @@ export default {
     })
   },
   methods: {
+    getUserIndex () {
+      var vm = this
+      var index = this.users.findIndex(function (user) {
+        return user.id === vm.user.uid
+      })
+      return index
+    },
+    getUserKey () {
+      var index = this.getUserIndex()
+      if (index > -1) {
+        return this.users[index]['.key']
+      } else {
+        return false
+      }
+    },
+    checkedIn () {
+      var vm = this
+      if (typeof (this.user.locs) === 'undefined') {
+        return false
+      }
+      if (typeof (this.user.locs[this.loc.type]) === 'undefined') {
+        return false
+      }
+      var index = this.user.locs[this.loc.type].findIndex(function (locID) {
+        return locID === vm.loc['.key']
+      })
+      return index > -1
+    },
     checkIn () {
-      console.log('check in')
+      console.log('check in!')
+      console.log(this.getUserKey())
+      if (!this.getUserKey()) {
+        return
+      }
+      if (!this.checkedIn()) {
+        console.log('already checked in')
+        return
+      }
+      var userKey = this.getUserKey()
+      var userIndex = this.getUserIndex()
+      console.log(userKey)
+      console.log(userIndex)
+      console.log(this.users)
+      console.log(this.users[userIndex])
+      if (typeof (this.users[userIndex].locs) === 'undefined') {
+        console.log(this.$firebaseRefs.users[userKey])
+        var updates = {}
+        var foo = {}
+        foo[this.loc.type] = []
+        foo[this.loc.type].push(this.loc['.key'])
+        updates[userKey + '/locs'] = foo
+        this.$firebaseRefs.users.update(updates)
+      } else if (typeof (this.users[userIndex].locs[this.loc.type]) === 'undefined') {
+        updates = {}
+        foo = {}
+        updates[userKey + '/locs/' + this.loc.type] = [this.loc['.key']]
+        this.$firebaseRefs.users.update(updates)
+      } else {
+        updates = {}
+        console.log(this.users[userIndex].locs)
+        updates[userKey + '/locs/' + this.loc.type] = this.users[userIndex].locs[this.loc.type].push(this.loc['.key'])
+        this.$firebaseRefs.users.update(updates)
+        // console.log(this.$firebaseRefs.users.child(userKey))
+        // this.$firebaseRefs.users.child(userKey).locs[this.loc.type].push(this.loc['.key'])
+      }
+      if (!this.checkedIn()) {
+        console.log('checked in!')
+      } else {
+        console.log('already checked in!')
+      }
     },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {

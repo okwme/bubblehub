@@ -75,24 +75,22 @@ export default {
       var app = document.getElementById('chats')
       app.scrollTop = app.scrollHeight
     },
-    getKey (users = [], uid = false) {
-      var index = this.users.findIndex(function (user) {
-        console.log(user)
-        console.log(uid)
-        return user.id === uid
-      })
-      if (index > -1) {
-        return users[index]['.key']
-      } else {
-        return false
-      }
-    },
     newName () {
+      var user = this.user
+      console.log('new name')
+      console.log(user ? 'user true' : 'user false')
+      console.log(user)
       var vm = this
       // var user = firebase.auth().currentUser
-      var user = this.user
       if (user) {
-        var key = this.getKey(this.users, this.user.uid)
+        var key = this.$parent.getUserKey()
+        if (!key) {
+          console.log('no key')
+          console.log(key)
+          console.log(this)
+          return
+        }
+        console.log(key)
         console.log(key)
         var updates = {}
         updates[key + '/username'] = vm.username
