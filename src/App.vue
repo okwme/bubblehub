@@ -345,6 +345,9 @@ body{
   background-color:#00A8E8;
   font-size:16px;
 }
+.h1{
+  font-size:2.5em;
+}
 #app {
 
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

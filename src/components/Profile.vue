@@ -1,7 +1,7 @@
 <template>
   <article id="profile" :class="{ 'visible' : profileVisible }">
     <a id="closeProfile" class="close ui-btn" @click="close()" title="Close Profile"><img src="/static/icons/arrow-r.svg"></a>
-    <h1><span>usermane</span></h1>
+    <h1 class="h1"><span>usermane</span></h1>
     <ul>
       <li v-for="item in userCheckIns" @click="flip" :style="{backgroundColor:item.color, color:item.color}" :title="item.name"></li>
     </ul>
@@ -114,7 +114,7 @@ export default {
       // this.$parent.showMessage(e.target.title, 2000)
       // add Class
       e.target.setAttribute('data-flipped', true)
-      setTimeout(() => e.target.setAttribute('data-flipped', false), 550)
+      setTimeout(() => e.target.setAttribute('data-flipped', false), 510)
     }
   }
 }
@@ -164,25 +164,10 @@ export default {
       
       // flip
       cursor: pointer;
-      position:relative;
-      &:after{
-        content:'';
-        display: block;
-        position:absolute;
-        top:0; left:0; width:100%; height:100%;
-        background:rgba(0,0,0,.5);
-        opacity:0;
-        transition:opacity 250ms;
-      }
-      transform-style: preserve-3d;
-      transition: transform 500ms;
       &[data-flipped="true"]{
-        transform:rotateX(180deg);
-        &:after{
-          opacity:1;
-        }
+        animation: flipX .75s 1;
         &:nth-child(3n){
-          transform:rotateY(180deg);
+          animation: flipY .75s 1;
         }
       }
     }
@@ -194,5 +179,14 @@ export default {
   position:absolute;
   right:1rem;
   transform:rotate(90deg);
+}
+
+@keyframes flipX {
+  0% { transform:rotateX(0) }
+  70% { transform:rotateX(180deg) }
+}
+@keyframes flipY {
+  0% { transform:rotateY(0) }
+  70% { transform:rotateY(180deg) }
 }
 </style>
