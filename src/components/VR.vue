@@ -9,13 +9,13 @@
       <a-assets>
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
-        <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
+        <a-asset-item id="wheel-obj" src="/static/wheel.obj"></a-asset-item>
         <img id="sky-src" :src="photo">
       </a-assets>
       <!-- Ground Highlight -->
       <!--<a-image position="0 -.2 5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>-->
       <!-- Objects -->
-      <a-entity id="toy" toy-color check-in :position="planePosition" obj-model="obj: #plane-obj" rotation="-3 -45 0">
+      <a-entity id="toy" toy-color check-in :position="planePosition" :obj-model="objmodel" rotation="-3 -45 0">
         <a-animation v-if="animOn" attribute="rotation"
         direction="normal"
         dur="20000"
@@ -61,6 +61,11 @@ export default{
       currentPhotoId: false,
       photo: '/static/loading.png',
       planePosition: '0 1.5 -3'
+    }
+  },
+  computed: {
+    objmodel () {
+      return this.loc.type === 'airport' ? 'obj: #plane-obj' : 'obj: #wheel-obj'
     }
   },
   watch: {

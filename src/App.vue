@@ -62,7 +62,7 @@ export default {
       checkInWatch: false,
       viewing: 'home',
       vrOn: true,
-      spoof: 'London',
+      spoof: false,
       sampleCities: sampleCities,
       defaultPhoto: '',
       // radius: 20,
