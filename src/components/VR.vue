@@ -1,6 +1,6 @@
 <template>
   <div id="vr">
-    <a-scene id="scene" ref="scene">
+    <a-scene id="scene" vr-mode-ui="enabled: false">
       <a-assets>
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
@@ -13,7 +13,7 @@
       <!--<a-image position="0 -.2 5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>-->
 
       <!-- Objects -->
-      <a-entity toy-color check-in :position="planePosition" obj-model="obj: #plane-obj" rotation="-3 -45 0">
+      <a-entity id="toy" toy-color check-in :position="planePosition" obj-model="obj: #plane-obj" rotation="-3 -45 0">
         <a-animation v-if="animOn" attribute="rotation"
         direction="normal"
         dur="20000"
@@ -25,7 +25,7 @@
       
       <!-- camera / cursor -->
       <a-entity camera="userHeight: 1.6" look-controls>
-        <a-cursor></a-cursor>
+        <a-cursor v-if="loc"></a-cursor>
       </a-entity>
 
       <!-- Background / loc.photo -->
@@ -50,7 +50,7 @@ export default{
       animOn: true,
       currentPhotoId: false,
       photo: '/static/loading.png',
-      planePosition: '0 3 -3'
+      planePosition: '0 1.5 -3'
     }
   },
   mounted () {
@@ -60,12 +60,13 @@ export default{
     loc () {
       if (this.loc && this.loc.photos) {
         this.switchPhoto()
+        document.getElementById('toy').setAttribute('material', 'color', this.loc.color)
       }
     }
   },
   methods: {
     rand () {
-      return Math.floor(Math.random() * 3)
+      return Math.floor(Math.random() * 3 + 1)
     },
     changePosition () {
       this.planePosition = this.rand() + ' ' + this.rand() + ' ' + this.rand()
@@ -111,7 +112,7 @@ export default{
     // console.log(AFRAME.version)
     AFRAME.registerComponent('toy-color', {
       init: function () {
-        this.el.setAttribute('material', 'color:red')
+        this.el.setAttribute('material', 'color:white')
       }
     })
     AFRAME.registerComponent('check-in', {
@@ -123,11 +124,11 @@ export default{
           }
           var aframeEl = this
           // const randomIndex = Math.floor(Math.random() * COLORS.length)
-          this.setAttribute('material', 'color', 'yellow')
-          vm.$parent.checkIn()
+          this.setAttribute('material', 'color', 'red')
+          // vm.$parent.checkIn()
           vm.switchPhoto(function () {
             vm.changePosition()
-            aframeEl.setAttribute('material', 'color', 'green')
+            aframeEl.setAttribute('material', 'color', vm.loc.color)
           })
         })
       }

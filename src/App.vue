@@ -67,7 +67,7 @@ export default {
   data () {
     return {
       viewing: 'home',
-      vrOn: false,
+      vrOn: true,
       spoof: 'London',
       sampleCities: sampleCities,
       defaultPhoto: '',
