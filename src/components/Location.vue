@@ -1,6 +1,6 @@
 <template>
   <section id="log">
-    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
+    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{locType}}</p></div></header>
     <ul class="h3">
       <li v-for="n in 40" 
       @click="showProfile()"      
@@ -15,6 +15,11 @@
 export default{
   name: 'Location',
   props: ['loc'],
+  computed: {
+    locType () {
+      return this.loc.type === 'station' ? 'bus stop' : this.loc.type
+    }
+  },
   methods: {
     showProfile: function () {
       console.log('show')
