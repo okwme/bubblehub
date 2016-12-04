@@ -16,7 +16,19 @@ export default {
       userCheckIns: [
         {
           name: 'London Heathrow, GB',
-          color: 'red'
+          color: '#2AFC98'
+        },
+        {
+          name: 'Tegel',
+          color: '#9FA0C3'
+        },
+        {
+          name: "O'Hare",
+          color: '#6D1A36'
+        },
+        {
+          name: 'London Heathrow, GB',
+          color: '#16C172'
         },
         {
           name: 'Tegel',
@@ -24,15 +36,47 @@ export default {
         },
         {
           name: "O'Hare",
-          color: 'blue'
+          color: '#5E6973'
         },
         {
           name: 'London Heathrow, GB',
-          color: 'red'
+          color: '#7CFFC4'
         },
         {
           name: 'Tegel',
-          color: 'green'
+          color: '#3B60E4'
+        },
+        {
+          name: "O'Hare",
+          color: '#BCF8EC'
+        },
+        {
+          name: 'London Heathrow, GB',
+          color: '#FF570A'
+        },
+        {
+          name: 'Tegel',
+          color: '#420039'
+        },
+        {
+          name: 'London Heathrow, GB',
+          color: '#F433AB'
+        },
+        {
+          name: 'Tegel',
+          color: '#8C5E58'
+        },
+        {
+          name: "O'Hare",
+          color: '#A833B9'
+        },
+        {
+          name: 'London Heathrow, GB',
+          color: '#41292C'
+        },
+        {
+          name: 'Tegel',
+          color: '#FD3E81'
         },
         {
           name: "O'Hare",
@@ -40,67 +84,23 @@ export default {
         },
         {
           name: 'London Heathrow, GB',
-          color: 'red'
+          color: '#A7CAB1'
         },
         {
           name: 'Tegel',
-          color: 'green'
+          color: '#F4ECD6'
         },
         {
           name: "O'Hare",
-          color: 'blue'
+          color: '#49D49D'
         },
         {
           name: 'London Heathrow, GB',
-          color: 'red'
+          color: '#F58549'
         },
         {
           name: 'Tegel',
-          color: 'green'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: 'red'
-        },
-        {
-          name: 'Tegel',
-          color: 'green'
-        },
-        {
-          name: "O'Hare",
-          color: 'blue'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: 'red'
-        },
-        {
-          name: 'Tegel',
-          color: 'green'
-        },
-        {
-          name: "O'Hare",
-          color: 'blue'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: 'red'
-        },
-        {
-          name: 'Tegel',
-          color: 'green'
-        },
-        {
-          name: "O'Hare",
-          color: 'blue'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: 'red'
-        },
-        {
-          name: 'Tegel',
-          color: 'green'
+          color: '#05F140'
         }
       ]
     }

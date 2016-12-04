@@ -61,6 +61,7 @@ export default{
       if (this.loc && this.loc.photos) {
         this.switchPhoto()
         document.getElementById('toy').setAttribute('material', 'color', this.loc.color)
+        this.$parent.showGreeting()
       }
     }
   },

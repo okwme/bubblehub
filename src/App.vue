@@ -19,16 +19,12 @@
           <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <polyline fill="none" stroke="black" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="9,2 23,16 9,30 " transform="translate(0, 0)" stroke-linejoin="miter"></polyline> </svg>
         </a>
 
-        <div v-if='loc'>
-          <h2>
-          Welcome to
-          </h2>
-          <h1>
-            {{loc.name}}, {{loc.country_code}}
-          </h1>
+        <div id="greeting" v-if='loc' class="watermark" >
+          <h2 v-if="greetingVisible">Welcome to</h2>
+          <h1 v-if="greetingVisible">{{loc.name}}, {{loc.country_code}}</h1>
         </div>
-        <div v-else>
-          <h1>Please wait while we locate you</h1>
+        <div id="loading" class="watermark" v-else>
+          <h1>Loading</h1>
         </div>
 
       <chat 
@@ -74,6 +70,7 @@ export default {
       radius: 20,
       chatVisible: false,
       profileVisible: false,
+      greetingVisible: true,
       message: {
         visible: false,
         text: '',
@@ -160,6 +157,11 @@ export default {
       this.message.text = text
       const vm = this
       this.message.hideTimeout = setTimeout(function () { vm.message.visible = false }, hideAfter)
+    },
+    showGreeting: function (bool = true) {
+      this.greetingVisible = bool
+      const vm = this
+      setTimeout(function () { vm.greetingVisible = false }, 4000)
     },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
@@ -447,6 +449,26 @@ body{
       stroke:white;
     }
   }
+}
+
+.watermark{
+  user-select:none;
+  position:fixed;
+  margin-top: 12.5vh;
+  width:100%;
+  color:rgba(255,255,255,.45);
+}
+#greeting{
+  z-index:10;
+}
+#loading{
+  z-index: 1;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{ opacity:1; }
+  50%{ opacity:0 }
+  100%{ opacity: 1}
 }
 
 // message

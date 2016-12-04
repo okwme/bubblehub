@@ -1,13 +1,11 @@
 <template>
-  <section id="log" :style="{backgroundColor: loc.color }">
-    <div class="inner">
-      <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
-      <ul class="h3">
-        <li v-for="n in 40" @click="showProfile()">
-          <img src="/static/icons/log.svg"><span>Username</span>
-        </li>
-      </ul>
-    </div>
+  <section id="log">
+    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
+    <ul class="h3">
+      <li v-for="n in 40" @click="showProfile()">
+        <img src="/static/icons/log.svg"><span>Username</span>
+      </li>
+    </ul>
   </section>
 </template>
 
@@ -28,7 +26,7 @@ export default{
   transition:transform 500ms;
   position: fixed;
   top:0; left:0; width:100%; height:100%;
-  background:white;
+  background:#00A8E8;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
