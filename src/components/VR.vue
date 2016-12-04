@@ -10,7 +10,7 @@
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
         <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
-       <!--  <img id="sky-src" :src="photo"> -->
+        <img id="sky-src" :src="photo">
       </a-assets>
       <!-- Ground Highlight -->
       <!--<a-image position="0 -.2 5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>-->
