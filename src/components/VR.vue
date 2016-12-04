@@ -13,14 +13,14 @@
       <!--<a-image position="0 -.2 5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>-->
 
       <!-- Objects -->
-      <a-entity toy-color check-in position="0 2 -3" obj-model="obj: #plane-obj" rotation="-3 -45 0">
+      <a-entity toy-color check-in :position="planePosition" obj-model="obj: #plane-obj" rotation="-3 -45 0">
         <a-animation v-if="animOn" attribute="rotation"
-                  direction="normal"
-                  dur="20000"
-                  fill="reverse"
-                  to="0 -45 -360"
-                  easing="linear"
-                  repeat="indefinite"></a-animation>
+        direction="normal"
+        dur="20000"
+        fill="reverse"
+        to="0 -45 -360"
+        easing="linear"
+        repeat="indefinite"></a-animation>
       </a-entity>
       
       <!-- camera / cursor -->
@@ -45,28 +45,45 @@ export default{
   props: ['loc'],
   data () {
     return {
-      topAmount: 5,
+      loading: true,
+      topAmount: 20,
       animOn: true,
       currentPhotoId: false,
-      photo: '/static/loading.png'
+      photo: '/static/loading.png',
+      planePosition: '0 3 -3'
     }
   },
   mounted () {
-    this.switchPhoto()
+    // this.switchPhoto()
+  },
+  watch: {
+    loc () {
+      if (this.loc && this.loc.photos) {
+        this.switchPhoto()
+      }
+    }
   },
   methods: {
-    switchPhoto () {
+    rand () {
+      return Math.floor(Math.random() * 3)
+    },
+    changePosition () {
+      this.planePosition = this.rand() + ' ' + this.rand() + ' ' + this.rand()
+    },
+    switchPhoto (callback = function () {}) {
       var vm = this
-      var photoId = this.loc.photos[Math.floor(Math.random() * this.topAmount)].id
+      vm.loading = true
+      var topAmount = this.loc.photos.length > this.topAmount ? this.loc.photos.length : this.topAmount
+      var photoId = this.loc.photos[Math.floor(Math.random() * topAmount)].id
       if (photoId === this.currentPhotoId) {
         this.switchPhoto()
       } else {
         this.getFlick(photoId, function (url) {
-          console.log(url)
           var img = new Image()
-          console.log(img)
           img.onload = function () {
             vm.photo = url
+            vm.loading = false
+            callback()
           }
           img.src = url
         })
@@ -81,10 +98,8 @@ export default{
           }
         })
         if (!photo) {
-          console.log('coldnt find one over 2000')
           photo = successData.data.sizes.size.pop()
         }
-        console.log(photo)
         callback(photo.source)
       }, function (errorResult) {
         console.log(errorResult)
@@ -101,12 +116,19 @@ export default{
     })
     AFRAME.registerComponent('check-in', {
       init: function () {
-        const COLORS = ['red', 'green', 'blue']
+        // const COLORS = ['red', 'green', 'blue']
         this.el.addEventListener('click', function () {
-          const randomIndex = Math.floor(Math.random() * COLORS.length)
-          this.setAttribute('material', 'color', COLORS[randomIndex])
-          console.log('I was clicked!')
-          vm.switchPhoto()
+          if (vm.loading) {
+            return
+          }
+          var aframeEl = this
+          // const randomIndex = Math.floor(Math.random() * COLORS.length)
+          this.setAttribute('material', 'color', 'yellow')
+          vm.$parent.checkIn()
+          vm.switchPhoto(function () {
+            vm.changePosition()
+            aframeEl.setAttribute('material', 'color', 'green')
+          })
         })
       }
     })
