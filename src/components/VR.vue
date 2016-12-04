@@ -53,7 +53,14 @@ export default{
     }
   },
   mounted () {
-    this.switchPhoto()
+    // this.switchPhoto()
+  },
+  watch: {
+    loc () {
+      if (this.loc && this.loc.photos) {
+        this.switchPhoto()
+      }
+    }
   },
   methods: {
     rand () {
@@ -64,6 +71,7 @@ export default{
     },
     switchPhoto (callback = function () {}) {
       var vm = this
+      vm.loading = true
       var topAmount = this.loc.photos.length > this.topAmount ? this.loc.photos.length : this.topAmount
       var photoId = this.loc.photos[Math.floor(Math.random() * topAmount)].id
       if (photoId === this.currentPhotoId) {
@@ -115,7 +123,6 @@ export default{
           var aframeEl = this
           // const randomIndex = Math.floor(Math.random() * COLORS.length)
           this.setAttribute('material', 'color', 'yellow')
-          vm.loading = true
           vm.$parent.checkIn()
           vm.switchPhoto(function () {
             vm.changePosition()
