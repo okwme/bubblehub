@@ -3,12 +3,8 @@
     <div id="greeting" v-if='loc' class="watermark" :class='{"set": !$parent.greetingVisible}'>
       <h2 v-if="$parent.greetingVisible">Welcome to</h2>
       <h1>{{loc.name}}, {{loc.country_code}} <span class='swatch' :style="{'background-color' : loc.color}">&nbsp;</span></h1>
-      <div v-if='checkInPopup' @click='checkInPopup = false'>
-      <h2>You've just checked in to {{loc.name}}!</h2>
-      You'll be able to see this {{loc.type}}'s color swatch in your prfile now!<br/>
-      Find & click the {{loc.type === 'airport' ? 'paper plane' : 'bus'}} to see more bubbles from your area!
-      </div>
     </div>
+
     <a-scene id="scene" vr-mode-ui="enabled: false">
       <a-assets>
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
@@ -16,11 +12,8 @@
         <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
         <img id="sky-src" :src="photo">
       </a-assets>
-      
-
       <!-- Ground Highlight -->
       <!--<a-image position="0 -.2 5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>-->
-
       <!-- Objects -->
       <a-entity id="toy" toy-color check-in :position="planePosition" obj-model="obj: #plane-obj" rotation="-3 -45 0">
         <a-animation v-if="animOn" attribute="rotation"
@@ -31,16 +24,23 @@
         easing="linear"
         repeat="indefinite"></a-animation>
       </a-entity>
-      
       <!-- camera / cursor -->
       <a-entity camera="userHeight: 1.6" look-controls>
         <a-cursor v-if="loc"></a-cursor>
       </a-entity>
-
       <!-- Background / loc.photo -->
       <a-sky :src="photo"></a-sky>
-
     </a-scene>
+
+    <!-- modal -->
+    <div id="firstCheckInModal" @click='checkInPopup = false' :class="[{'visible':checkInPopup}, 'modal']">
+      <div class="inner">
+        <h2 class="h3">You checked-in to<br> {{loc.name}}!</h2>
+        <span class="swatch" :style="{backgroundColor:loc.color}"></span> was added to your profile!<br><br>
+        Click the {{loc.type === 'airport' ? 'paper plane' : 'bus'}} again for new scenes
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -66,6 +66,7 @@ export default{
   watch: {
     checkInWatch () {
       this.checkInPopup = true
+      setTimeout(function () { this.checkInPopup = false }, 4000)
     },
     loc () {
       if (this.loc && this.loc.photos) {
@@ -157,13 +158,35 @@ export default{
 }
 </script>
 
-<style type="scss" scoped>
+<style lang="scss" scoped>
   #vr{
     position: absolute;
-    top:0;
+    top:0; left: 0;
     height:100vh;
     overflow: hidden;
     width:100%;
     transition:transform 500ms;
+  }
+
+  #firstCheckInModal{
+    position: absolute;
+    width:100vw; height:100vh;
+    top:0; left:0;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    > .inner {
+      background: white;
+      box-shadow:0 0 6px rgba(0,0,0,.25);
+      padding:2rem;
+      //max-width:20em;
+      > h2{
+        margin-bottom: 1em;
+      }
+      .swatch{
+        width:1em; height:1em;
+        display:inline-block;
+      }
+    }
   }
 </style>
