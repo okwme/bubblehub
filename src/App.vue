@@ -33,7 +33,7 @@
       <profile v-if='me' :profileVisible="profileVisible" :locs='locs' :user='profileUser'></profile>
       <location v-if='loc' :loc="loc" :users='users'></location>
 
-      <div id="message" ref="message" :class="{'visible': message.visible }">{{ message.text }}</div>
+      <div id="message" ref="message" :class="[{'visible': message.visible}, 'modal']">{{ message.text }}</div>
 
     </div> <!-- endif -->
   </div> <!-- #app -->
@@ -615,22 +615,11 @@ body{
 
 // message
 #message{
-  transition: opacity 400ms, transform 400ms, visibility 0s 409ms;
   position:fixed;
   bottom:0; left:0; width:100%;
-  z-index: 50;
   padding:1em 1rem;
-  box-shadow:0 -2px 6px rgba(0,0,0,.5);
+  box-shadow:0 -1px 4px rgba(0,0,0,.25);
   background:white;
-  opacity:0;
-  visibility: hidden;
-  transform:translateY(1em);
-  &.visible{
-    visibility: visible;
-    opacity:1;
-    transform:none;
-    transition:opacity 400ms, transform 400ms, visibility 0s 0s;
-  }
 }
 
 // helper classes
@@ -641,5 +630,22 @@ body{
   align-items:center;
   justify-content: center;
   flex-wrap:wrap;
+}
+.tt-cap{
+  text-transform: capitalize;
+}
+
+.modal{
+  transition: opacity 400ms, transform 400ms, visibility 0s 409ms;
+  z-index:50;
+  opacity:0;
+  visibility: hidden;
+  transform:translateY(1em);
+  &.visible{
+    visibility: visible;
+    opacity:1;
+    transform:none;
+    transition:opacity 400ms, transform 400ms, visibility 0s 0s;
+  }
 }
 </style>

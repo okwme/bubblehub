@@ -1,6 +1,6 @@
 <template>
   <section id="log">
-    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
+    <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{locType}}</p></div></header>
     <ul class="h3">
       <li v-for="user in userlist" 
       @click="showProfile(user['.key'])"      
@@ -30,6 +30,9 @@ export default{
     }
   },
   computed: {
+    locType () {
+      return this.loc.type === 'station' ? 'bus stop' : this.loc.type
+    },
     userlist () {
       var vm = this
       return this.users.filter(function (user) {
