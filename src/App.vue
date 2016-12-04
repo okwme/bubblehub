@@ -7,16 +7,16 @@
         <VR v-if="vrOn" :loc="loc"></VR>
         <!-- ui -->
         <a v-show="loc && viewing=='home'" id='showChat' @click='view("chat")' class="ui-btn">
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <path fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M27.5,21.9 C29.7,19.8,31,17,31,14c0-6.8-6.7-12-15-12S1,7.2,1,14c0,6.8,6.7,12.3,15,12.3c1.5,0,2.9-0.2,4.2-0.5L28,29L27.5,21.9z" stroke-linejoin="miter"></path> </g></svg>
+          <img src="/static/icons/chat.svg">
         </a>
         <a id="showMyProfile" v-show="viewing=='home'" @click='view("profile")' class="ui-btn">
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <circle data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="10" cy="12" r="2" stroke-linejoin="miter"></circle> <circle data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="22" cy="12" r="2" stroke-linejoin="miter"></circle> <path data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M11,20 c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5" stroke-linejoin="miter"></path> <circle fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="16" cy="16" r="15" stroke-linejoin="miter"></circle> </g></svg>
+          <img src="/static/icons/profile.svg">
         </a>
-        <a v-show="loc && viewing=='home'" id="showLocLog" @click="view('log')" class="ui-btn">
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <g transform="translate(0, 0)"> <polyline fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="4,4 28,4 23,12 28,20 4,20 " stroke-linejoin="miter"></polyline> <line data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" x1="4" y1="1" x2="4" y2="31" stroke-linejoin="miter"></line> </g> </svg>
+        <a id="showLocLog" v-show="loc && viewing=='home'"  @click="view('log')" class="ui-btn">
+          <img src="/static/icons/log.svg">
         </a>
         <a id="backHome" v-show="viewing!=='home'" @click='view("home")' class="ui-btn">
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <polyline fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="9,2 23,16 9,30 " transform="translate(0, 0)" stroke-linejoin="miter"></polyline> </svg>
+          <img src="/static/icons/arrow-r.svg">
         </a>
 
         <div v-if='loc'>
@@ -366,6 +366,9 @@ body{
   position:fixed;
   z-index:2;
   cursor: pointer;
+  img{
+    width:32px;
+  }
 }
 
 #showChat{
@@ -389,10 +392,6 @@ body{
   [data-view="log"] &{
     left:0;
     transform:rotate(180deg);
-  }
-  [data-view="profile"] &{
-    right:0;
-    transform:rotate(90deg);
   }
 }
 </style>
