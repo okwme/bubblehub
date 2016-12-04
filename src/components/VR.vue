@@ -1,11 +1,15 @@
 <template>
   <div id="vr">
+    <div id="greeting" v-if='loc' class="watermark" :class='{"set": !$parent.greetingVisible}'>
+      <h2 v-if="$parent.greetingVisible">Welcome to</h2>
+      <h1>{{loc.name}}, {{loc.country_code}} <span class='swatch' :style="{'background-color' : loc.color}">&nbsp;</span></h1>
+    </div>
     <a-scene id="scene" vr-mode-ui="enabled: false">
       <a-assets>
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
         <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
-        <img id="sky-src" :src="photo">
+        <!-- <img id="sky-src" :src="photo"> -->
       </a-assets>
       
 
@@ -29,7 +33,7 @@
       </a-entity>
 
       <!-- Background / loc.photo -->
-      <a-sky :src="photo"></a-sky>
+      <!-- <a-sky :src="photo"></a-sky> -->
 
     </a-scene>
   </div>
@@ -53,9 +57,6 @@ export default{
       planePosition: '0 1.5 -3'
     }
   },
-  mounted () {
-    // this.switchPhoto()
-  },
   watch: {
     loc () {
       if (this.loc && this.loc.photos) {
@@ -67,7 +68,8 @@ export default{
   },
   methods: {
     rand () {
-      return Math.floor(Math.random() * 3 + 1)
+      var foo = Math.floor(Math.random() * 12) - 6
+      return foo < 2 && foo > 0 ? 2 : foo > -2 && foo < 0 ? -2 : foo
     },
     changePosition () {
       this.planePosition = this.rand() + ' ' + this.rand() + ' ' + this.rand()
@@ -92,7 +94,7 @@ export default{
       }
     },
     getFlick (photoId, callback = function () {}) {
-      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
+      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=9f9dc34361fdef233d4309c30176d8dd&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
         var photo = false
         successData.data.sizes.size.reverse().forEach(function (element, int) {
           if (!photo && element.width <= 2050) {
@@ -108,9 +110,17 @@ export default{
       })
     }
   },
-  created () {
+  mounted () {
+    console.log('mounted')
     var vm = this
     // console.log(AFRAME.version)
+    console.log(AFRAME)
+    if (typeof (AFRAME.components['toy-color']) !== 'undefined') {
+      console.log('plane already defined!')
+      return
+    } else {
+      console.log('pane not already defined!')
+    }
     AFRAME.registerComponent('toy-color', {
       init: function () {
         this.el.setAttribute('material', 'color:white')
@@ -126,7 +136,7 @@ export default{
           var aframeEl = this
           // const randomIndex = Math.floor(Math.random() * COLORS.length)
           this.setAttribute('material', 'color', 'red')
-          // vm.$parent.checkIn()
+          vm.$parent.checkIn()
           vm.switchPhoto(function () {
             vm.changePosition()
             aframeEl.setAttribute('material', 'color', vm.loc.color)

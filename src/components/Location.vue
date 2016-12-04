@@ -2,7 +2,9 @@
   <section id="log">
     <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
     <ul class="h3">
-      <li v-for="n in 40" @click="showProfile()">
+      <li v-for="n in 40" 
+      @click="showProfile()"      
+      >
         <img src="/static/icons/log.svg"><span>Username</span>
       </li>
     </ul>
@@ -15,6 +17,7 @@ export default{
   props: ['loc'],
   methods: {
     showProfile: function () {
+      console.log('show')
       this.$parent.showProfile()
     }
   }

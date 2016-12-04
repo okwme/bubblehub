@@ -19,11 +19,7 @@
           <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <polyline fill="none" stroke="black" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="9,2 23,16 9,30 " transform="translate(0, 0)" stroke-linejoin="miter"></polyline> </svg>
         </a>
 
-        <div id="greeting" v-if='loc' class="watermark" >
-          <h2 v-if="greetingVisible">Welcome to</h2>
-          <h1 v-if="greetingVisible">{{loc.name}}, {{loc.country_code}}</h1>
-        </div>
-        <div id="loading" class="watermark" v-else>
+        <div v-if="!loc" id="loading" class="watermark">
           <h1>Loading</h1>
         </div>
 
@@ -64,10 +60,10 @@ export default {
     return {
       viewing: 'home',
       vrOn: true,
-      spoof: 'London',
+      spoof: 'New York',
       sampleCities: sampleCities,
       defaultPhoto: '',
-      radius: 20,
+      // radius: 20,
       chatVisible: false,
       profileVisible: false,
       greetingVisible: true,
@@ -90,25 +86,24 @@ export default {
     }
   },
   firebase: {
+    locs: db.ref('locs'),
     users: db.ref('users'),
-    allChats: db.ref('chats'),
-    locs: db.ref('locs')
+    allChats: db.ref('chats')
     // chats: db.ref('chats/main')
     // user: firebase.auth().currentUser
   },
   computed: {
+    radius () {
+      return this.loc.type === 'airport' ? 20 : 32
+    },
     me () {
       var vm = this
       var meID = this.users.findIndex(function (user) {
         return user.id === vm.user.uid
       })
       if (meID < 0 && this.user) {
-        var me = {
-          username: vm.user.displayName,
-          id: vm.user.uid
-        }
-        this.$firebaseRefs.users.push(me)
-        return me
+        return this.createMe()
+        // return me
       } else {
         return this.users[meID]
       }
@@ -126,13 +121,18 @@ export default {
     },
     stations () {
       this.checkReady()
+    },
+    locs () {
+      this.checkReady()
+    },
+    users () {
+      this.checkReady()
     }
   },
   mounted () {
     var vm = this
     this.getLocation()
     this.getAirports()
-    this.getStations()
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         firebase.auth().signInAnonymously().catch(error => {
@@ -141,10 +141,25 @@ export default {
       } else {
         console.log('success!')
         vm.user = firebase.auth().currentUser
+        if (!this.me) {
+          this.createMe()
+        }
       }
     })
   },
   methods: {
+    createMe () {
+      var me = {
+        username: this.user.displayName,
+        id: this.user.uid,
+        locs: {
+          airports: [],
+          stations: []
+        }
+      }
+      this.$firebaseRefs.users.push(me)
+      return me
+    },
     view: function (a = 'home') {
       this.viewing = a === this.viewing ? 'home' : a
     },
@@ -163,9 +178,110 @@ export default {
       const vm = this
       setTimeout(function () { vm.greetingVisible = false }, 4000)
     },
+    getUserIndex () {
+      var vm = this
+      var index = this.users.findIndex(function (user) {
+        return user.id === vm.user.uid
+      })
+      return index
+    },
+    getUserKey () {
+      var index = this.getUserIndex()
+      if (index > -1) {
+        return this.users[index]['.key']
+      } else {
+        return false
+      }
+    },
+    isset (thing) {
+      return typeof (thing) !== 'undefined'
+    },
+    checkedIn () {
+      var vm = this
+      // var userKey = this.getUserKey()
+      // var userIndex = this.getUserIndex()
+
+      // var checkedIn = db.ref('users/' + userKey).once('value').then(function (snapshot) {
+      //   console.log(snapshot.val())
+      //   var user = snapshot.val()
+        // + '/locs/' + this.loc.type + '/' + this.loc['.key']
+      if (this.isset(this.me.locs) && this.isset(this.me.locs[this.loc.type])) {
+        var index = this.me.locs[this.loc.type].findIndex(function (locID) {
+          return locID === vm.loc['.key']
+        })
+        return index > -1
+      } else {
+        return false
+      }
+      // })
+    },
+    checkIn () {
+      var userKey = this.getUserKey()
+      // var userIndex = this.getUserIndex()
+      if (!userKey) {
+        console.log('no user yet')
+        return
+      }
+      if (this.checkedIn()) {
+        console.log('already checked in')
+        return
+      }
+
+      var meCopy = JSON.parse(JSON.stringify(this.me))
+      if (!this.isset(meCopy.locs)) {
+        meCopy.locs = []
+      }
+      if (!this.isset(meCopy.locs[this.loc.type])) {
+        meCopy.locs[this.loc.type] = []
+      }
+      meCopy.locs[this.loc.type].push(this.loc['.key'])
+      delete meCopy['.key']
+      db.ref('users/' + userKey).set(meCopy)
+
+      var locCopy = JSON.parse(JSON.stringify(this.loc))
+      if (!this.isset(locCopy.users)) {
+        locCopy.users = []
+      }
+      locCopy.users.push(userKey)
+      delete locCopy['.key']
+      db.ref('locs/' + this.loc['.key']).set(locCopy)
+
+      // updates[key + '/username'] = vm.username
+      // this.$parent.$firebaseRefs.users.update(updates)
+      // console.log(userKey)
+      // console.log(userIndex)
+      // console.log(this.users)
+      // console.log(this.users[userIndex])
+      // if (typeof (this.users[userIndex].locs) === 'undefined') {
+      //   console.log(this.$firebaseRefs.users[userKey])
+      //   var updates = {}
+      //   var foo = {}
+      //   foo[this.loc.type] = []
+      //   foo[this.loc.type].push(this.loc['.key'])
+      //   updates[userKey + '/locs'] = foo
+      //   this.$firebaseRefs.users.update(updates)
+      // } else if (typeof (this.users[userIndex].locs[this.loc.type]) === 'undefined') {
+      //   updates = {}
+      //   foo = {}
+      //   updates[userKey + '/locs/' + this.loc.type] = [this.loc['.key']]
+      //   this.$firebaseRefs.users.update(updates)
+      // } else {
+      //   updates = {}
+      //   console.log(this.users[userIndex].locs)
+      //   updates[userKey + '/locs/' + this.loc.type] = this.users[userIndex].locs[this.loc.type].push(this.loc['.key'])
+      //   this.$firebaseRefs.users.update(updates)
+      //   // console.log(this.$firebaseRefs.users.child(userKey))
+      //   // this.$firebaseRefs.users.child(userKey).locs[this.loc.type].push(this.loc['.key'])
+      // }
+      // if (!this.checkedIn()) {
+      //   console.log('checked in!')
+      // } else {
+      //   console.log('already checked in!')
+      // }
+    },
     getPhoto (loc, callback = function () {}) {
-      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
-        console.log(successResult)
+      console.log('get photo')
+      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9f9dc34361fdef233d4309c30176d8dd&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
         if (successResult.data.photos.photo.length === 0) {
           callback(this.defaultPhoto)
         } else {
@@ -213,10 +329,10 @@ export default {
       var index = this.locs.findIndex(function (item) {
         return item.slug === vm.locSlug
       })
-      return index > -1 && this.locs[index]
+      return index > -1 ? this.locs[index] : false
     },
     checkReady () {
-      if (this.airports.length > 0 && this.stations.length > 0 && this.user && this.long && !this.checkingReady) {
+      if (this.airports.length > 0 && this.user && this.long && !this.checkingReady && this.locs.length > 0 && this.users.length > 0) {
         this.checkingReady = true
         this.findMe()
       }
@@ -242,33 +358,38 @@ export default {
       .replace(/^-+/, '')             // Trim - from start of text
       .replace(/-+$/, '')             // Trim - from end of text
     },
+    bindToLoc (loc) {
+      console.log('bind to loc')
+      this.locSlug = this.slugify(loc.name)
+      this.loc = this.findLoc()
+      if (!this.loc) {
+        this.makeLoc(loc)
+      }
+      this.$bindAsArray('chats', db.ref('chats/' + this.locSlug))
+    },
     findMe () {
       var vm = this
       var myLocId = this.airports.findIndex(function (item) {
         return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
       })
       if (myLocId > -1) {
-        var type = 'airport'
-        var chosenList = this.airports
+        var loc = this.airports[myLocId]
+        loc.type = 'airport'
+        this.bindToLoc(loc)
       } else {
-        myLocId = this.stations.findIndex(function (item) {
-          return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
+        this.getStations(function () {
+          console.log('stations ended')
+          myLocId = vm.stations.findIndex(function (item) {
+            return vm.distanceBetween(vm.lat, vm.long, item.latitude, item.longitude) < 1
+          })
+          if (myLocId > -1) {
+            loc = vm.stations[myLocId]
+            loc.type = 'station'
+            vm.bindToLoc(loc)
+          } else {
+            vm.error = 'Sorry, Not close enough to a point of interest : ('
+          }
         })
-        type = 'station'
-        chosenList = this.stations
-      }
-      if (myLocId < 0) {
-        this.error = 'Sorry, Not close enough to a point of interest : ('
-      } else {
-        var loc = chosenList[myLocId]
-        loc.type = type
-        vm.locSlug = this.slugify(loc.name)
-        this.loc = this.findLoc()
-        if (!this.loc) {
-          this.makeLoc(loc)
-        }
-
-        vm.$bindAsArray('chats', db.ref('chats/' + this.locSlug))
       }
     },
     getAirports () {
@@ -293,7 +414,7 @@ export default {
         console.log(errorResult)
       })
     },
-    getStations () {
+    getStations (callback = function () {}) {
       var vm = this
       var options = {
         headers: {
@@ -303,6 +424,7 @@ export default {
       }
       this.$http.get('https://xap.ix-io.net/api/v1/distribusion/stations?fields%5Bstations%5D=iata_code%2Ctime_zone%2Ccountry_code%2Ccity_name%2Clongitude%2Clatitude%2Cname%2Cx_id&sort=x_id&page%5Bnumber%5D=1&page%5Bsize%5D=10000', options).then(function (successResult) {
         vm.stations = successResult.data.stations
+        callback()
       }, function (errorResult) {
         console.log(errorResult)
       })
@@ -454,12 +576,22 @@ body{
 .watermark{
   user-select:none;
   position:fixed;
+  transition: margin 500ms ease;
   margin-top: 12.5vh;
+  &.set {
+    margin-top: 2rem;
+  }
   width:100%;
   color:rgba(255,255,255,.45);
 }
+.swatch{
+  width:44px;
+  height:44px;
+  display:inline-block;
+}
 #greeting{
-  z-index:10;
+  z-index:1;
+
 }
 #loading{
   z-index: 1;

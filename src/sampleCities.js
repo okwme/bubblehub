@@ -1,4 +1,8 @@
 const sampleCities = [
+  { name: 'bus',
+    lat: 48.8710216,
+    long: 2.78195529999994
+  },
   {
     name: 'London',
     lat: 51.470985,
