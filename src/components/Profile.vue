@@ -111,7 +111,7 @@ export default {
     },
     flip (e) {
       // message
-      // this.$parent.showMessage(e.target.title, 2000)
+      this.$parent.showMessage(e.target.title, 2000)
       // add Class
       e.target.setAttribute('data-flipped', true)
       setTimeout(() => e.target.setAttribute('data-flipped', false), 510)
@@ -156,9 +156,9 @@ export default {
       clear:both;
     }
     > li{
-      width:25%;
+      width:20%;
       height:0;
-      padding-bottom:25%;
+      padding-bottom:20%;
       float:left;
 
       
@@ -167,6 +167,9 @@ export default {
       &[data-flipped="true"]{
         animation: flipX .75s 1;
         &:nth-child(3n){
+          animation: flipY .75s 1;
+        }
+        &:nth-child(7n){
           animation: flipY .75s 1;
         }
       }

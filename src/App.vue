@@ -40,6 +40,8 @@
 
       <profile :profileVisible="profileVisible"></profile>
 
+      <div id="message" ref="message" :class="{'visible': message.visible }">{{ message.text }}</div>
+
     </div> <!-- endif -->
   </div> <!-- #app -->
 </template>
@@ -69,6 +71,11 @@ export default {
       radius: 20,
       chatVisible: false,
       profileVisible: false,
+      message: {
+        visible: false,
+        text: '',
+        hideTimeout: null
+      },
       locKey: false,
       locSlug: false,
       loc: false,
@@ -143,6 +150,13 @@ export default {
     },
     showProfile: function (bool = true) {
       this.profileVisible = bool
+    },
+    showMessage: function (text = '', hideAfter = 2000) {
+      clearTimeout(this.message.hideTimeout)
+      this.message.visible = true
+      this.message.text = text
+      const vm = this
+      this.message.hideTimeout = setTimeout(function () { vm.message.visible = false }, hideAfter)
     },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
@@ -412,6 +426,26 @@ body{
   [data-view="log"] &{
     left:0;
     transform:rotate(180deg);
+  }
+}
+
+// message
+#message{
+  transition: opacity 400ms, transform 400ms, visibility 0s 409ms;
+  position:fixed;
+  bottom:0; left:0; width:100%;
+  z-index: 50;
+  padding:1em 1rem;
+  box-shadow:0 -2px 6px rgba(0,0,0,.5);
+  background:white;
+  opacity:0;
+  visibility: hidden;
+  transform:translateY(1em);
+  &.visible{
+    visibility: visible;
+    opacity:1;
+    transform:none;
+    transition:opacity 400ms, transform 400ms, visibility 0s 0s;
   }
 }
 </style>
