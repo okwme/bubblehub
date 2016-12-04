@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <VR :loc="loc"></VR>
+    <VR
+    v-if='loc'
+    :loc="loc"></VR>
     <div v-if='error'>
       {{error}}
     </div>
@@ -51,10 +53,10 @@ export default {
   data () {
     return {
       vrOn: true,
-      spoof: false,
+      spoof: 'London',
       sampleCities: sampleCities,
       defaultPhoto: '',
-      radius: 10,
+      radius: 20,
       chatVisible: false,
       locKey: false,
       locSlug: false,
@@ -126,18 +128,13 @@ export default {
   },
   methods: {
     getPhoto (loc, callback = function () {}) {
-      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&nojsoncallback=1').then(function (successResult) {
+      this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
+        console.log(successResult)
         if (successResult.data.photos.photo.length === 0) {
           callback(this.defaultPhoto)
         } else {
-          var photo = successResult.data.photos.photo.shift()
-          var photoId = photo.id
-          this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=502dd540a28d1e7ab1f2ae936dfe2538&photo_id=' + photoId + '&format=json&nojsoncallback=1').then(function (successData) {
-            var photo = successData.data.sizes.size[successData.data.sizes.size.length - 2]
-            callback(photo.source)
-          }, function (errorResult) {
-            console.log(errorResult)
-          })
+          var photos = successResult.data.photos.photo
+          callback(photos)
         }
       }, function (errorResult) {
         console.log(errorResult)
@@ -157,7 +154,7 @@ export default {
     },
     makeLoc (loc) {
       var vm = this
-      this.getPhoto(loc, function (photo) {
+      this.getPhoto(loc, function (photos = []) {
         var newLoc = {
           type: loc.type,
           key: vm.locSlug,
@@ -167,7 +164,7 @@ export default {
           long: loc.longitude,
           country_code: loc.country_code,
           color: vm.generateColor(vm.locSlug),
-          photo: photo,
+          photos: photos,
           entities: [],
           users: []
         }
