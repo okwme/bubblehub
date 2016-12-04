@@ -31,6 +31,7 @@ export default{
   background:white;
   overflow-x: hidden;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
   // hidden
   transform: translateX(100%);
 

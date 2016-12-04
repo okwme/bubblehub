@@ -130,6 +130,7 @@ export default {
   height:100%;
   overflow-x:hidden;
   overflow-y:scroll;
+  -webkit-overflow-scrolling: touch;
   background:white;
   
   // show / hide

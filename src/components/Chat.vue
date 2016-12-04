@@ -6,7 +6,7 @@
       {{chat.username}}: {{chat.msg}} 
     </div>
   </div>
-  <div class='inputs'>
+  <div class='inputs h3'>
     <input :value='username' placeholder='username' class='username' v-model='username' @keyup='newName()'>
     <input placeholder='message' class='text' v-model='currentMessage' @keyup.enter='newChat()'>
   </div>
@@ -136,7 +136,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #chat{
   transform: translateX(-100%);
   position:absolute;
@@ -154,17 +154,16 @@ export default {
   }
    > div{
     position:absolute;
-    left:0px;
-    right:0px;
+    left:0;
     width:100%;
   }
   #chats {
     -webkit-overflow-scrolling: touch;
-    bottom:110px;
-    padding:20px;
+    padding:2rem 2rem;
     text-align: left;
     overflow:auto;
-    max-height: calc(100% - 110px);
+    max-height: calc(100% - 9rem);
+    bottom:9rem;
     // height: calc(100vh - 110px);
     a{
       cursor: pointer;
@@ -172,30 +171,21 @@ export default {
   }
   .inputs{
     bottom:0px;
-    height:110px;
+    padding:.75rem 2rem 1rem;
+    color:inherit;
+    background:whitesmoke;
     input{
-      height:55px;
-      width: calc(100% - 10px);
-      font-size:34px;
-      line-height: 1.3em;
-      padding:5px;
-      border:0px;
+      display: block;
+      background:transparent;
+      font-size: inherit;
+      font-weight: bolder;
+      color:inherit;
+      border:none;
+      line-height: 1rem;
+      margin:1.25rem 0;
       &:focus{
         outline: none;
       }
-    }
-    input.username{
-      border-top: 1px solid black;
-      position:absolute;
-      bottom:55px;
-      left:0px;
-      width:100%;
-    }
-    input.text{
-      position:absolute;
-      bottom:0px;
-      left:0px;
-      width:100%;
     }
   }
 }

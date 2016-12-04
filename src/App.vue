@@ -363,6 +363,7 @@ body{
   margin:0;
   background-color:#00A8E8;
   font-size:16px;
+  line-height: normal;
 }
 .h1{
   font-size:2.5em;
