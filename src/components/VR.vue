@@ -136,6 +136,13 @@ export default{
 }
 </script>
 
-<style type="sass">
-  
+<style type="scss" scoped>
+  #vr{
+    position: absolute;
+    top:0;
+    height:100vh;
+    overflow: hidden;
+    width:100%;
+    transition:transform 500ms;
+  }
 </style>

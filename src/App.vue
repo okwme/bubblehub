@@ -6,15 +6,17 @@
 
         <VR v-if="vrOn" :loc="loc"></VR>
         <!-- ui -->
-        <a v-show="loc" id='showChat' @click='view("chat")'>
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <path fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M27.5,21.9 C29.7,19.8,31,17,31,14c0-6.8-6.7-12-15-12S1,7.2,1,14c0,6.8,6.7,12.3,15,12.3c1.5,0,2.9-0.2,4.2-0.5L28,29L27.5,21.9z" stroke-linejoin="miter"></path> </g></svg>
+        <a v-show="loc && viewing=='home'" id='showChat' @click='view("chat")' class="ui-btn">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <path fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M27.5,21.9 C29.7,19.8,31,17,31,14c0-6.8-6.7-12-15-12S1,7.2,1,14c0,6.8,6.7,12.3,15,12.3c1.5,0,2.9-0.2,4.2-0.5L28,29L27.5,21.9z" stroke-linejoin="miter"></path> </g></svg>
         </a>
-        <a id="showMyProfile" v-show="viewing=='home'" @click='view("profile")'>
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <circle data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="10" cy="12" r="2" stroke-linejoin="miter"></circle> <circle data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="22" cy="12" r="2" stroke-linejoin="miter"></circle> <path data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M11,20 c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5" stroke-linejoin="miter"></path> <circle fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="16" cy="16" r="15" stroke-linejoin="miter"></circle> </g></svg>
+        <a id="showMyProfile" v-show="viewing=='home'" @click='view("profile")' class="ui-btn">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <circle data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="10" cy="12" r="2" stroke-linejoin="miter"></circle> <circle data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="22" cy="12" r="2" stroke-linejoin="miter"></circle> <path data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M11,20 c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5" stroke-linejoin="miter"></path> <circle fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="16" cy="16" r="15" stroke-linejoin="miter"></circle> </g></svg>
         </a>
-
-        <a v-show="loc" id="showLocLog" @click="view('log')">
-          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <g transform="translate(0, 0)"> <polyline fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="4,4 28,4 23,12 28,20 4,20 " stroke-linejoin="miter"></polyline> <line data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" x1="4" y1="1" x2="4" y2="31" stroke-linejoin="miter"></line> </g> </svg>
+        <a v-show="loc && viewing=='home'" id="showLocLog" @click="view('log')" class="ui-btn">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <g transform="translate(0, 0)"> <polyline fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="4,4 28,4 23,12 28,20 4,20 " stroke-linejoin="miter"></polyline> <line data-color="color-2" fill="none" stroke="white" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" x1="4" y1="1" x2="4" y2="31" stroke-linejoin="miter"></line> </g> </svg>
+        </a>
+        <a id="backHome" v-show="viewing!=='home'" @click='view("home")' class="ui-btn">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <polyline fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="9,2 23,16 9,30 " transform="translate(0, 0)" stroke-linejoin="miter"></polyline> </svg>
         </a>
 
         <div v-if='loc'>
@@ -323,9 +325,13 @@ export default {
 *{
   box-sizing: border-box;
 }
+html{
+  font-size:12px;
+}
 body{
   padding:0;
   margin:0;
+  background-color:#00A8E8;
 }
 #app {
 
@@ -333,7 +339,7 @@ body{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #00BFFF;
   height: 100%;
 
   &[data-view="chat"]{
@@ -344,19 +350,49 @@ body{
       transform:translateX(100%)
     }
   }
+
+  &[data-view="log"]{
+    #chat,#vr{
+      transform:translateX(-100%)
+    }
+    #log{
+      transform:translateX(0)
+    }
+  }
 }
 
-svg{
-  *{
-    stroke:white;
-  }
+.ui-btn{
+  padding:1rem;
+  position:fixed;
+  z-index:2;
+  cursor: pointer;
 }
 
 #showChat{
-    cursor: pointer;
-    z-index:2;
-    position:absolute;
-    left:10px;
-    top:10px;
+    left:0;
+    top:0;
+}
+#showLocLog{
+  top:0;
+  right:0;
+}
+#showMyProfile{
+  bottom:0;
+  left:50%;
+  margin-left: calc(-1rem - 32px);
+}
+#backHome{
+  top:0;
+  [data-view="chat"] &{
+    right:0;
   }
+  [data-view="log"] &{
+    left:0;
+    transform:rotate(180deg);
+  }
+  [data-view="profile"] &{
+    right:0;
+    transform:rotate(90deg);
+  }
+}
 </style>
