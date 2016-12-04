@@ -16,6 +16,9 @@ export default {
   props: ['profileVisible', 'locs', 'user'],
   computed: {
     checkins () {
+      if (this.user.username === 'admin') {
+        return this.userCheckIns
+      }
       var vm = this
       return this.locs.filter(function (loc) {
         var indexAir = -1
