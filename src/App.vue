@@ -595,13 +595,22 @@ body{
   color:rgba(255,255,255,.45);
 }
 .swatch{
-  width:44px;
-  height:44px;
+  width:1.125em;
+  height:1.125em;
+  vertical-align: middle;
   display:inline-block;
 }
 #greeting{
   z-index:1;
-
+  padding:0 5rem;
+  @media screen and (max-width: 480px){
+    font-size:.625em;
+    .swatch{
+      display: block;
+      margin:0 auto;
+      margin-top: .5em;
+    }
+  }
 }
 #loading{
   z-index: 1;

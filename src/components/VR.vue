@@ -150,7 +150,7 @@ export default{
           }
           var aframeEl = this
           // const randomIndex = Math.floor(Math.random() * COLORS.length)
-          this.setAttribute('material', 'color', 'red')
+          this.setAttribute('material', 'color', '#00A8E8')
           vm.$parent.checkIn()
           vm.switchPhoto(function () {
             vm.changePosition()
