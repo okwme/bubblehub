@@ -18,6 +18,7 @@
       v-if='loc'
       v-bind:loc='loc'
       v-bind:user='user'
+      v-bind:users='users'
       v-bind:chats='chats'
       v-bind:chatVisible='chatVisible'></chat>
 
@@ -53,7 +54,7 @@ export default {
   data () {
     return {
       vrOn: true,
-      spoof: 'London',
+      spoof: 'New York',
       sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 20,
@@ -127,6 +128,9 @@ export default {
     })
   },
   methods: {
+    checkIn () {
+      console.log('check in')
+    },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
         console.log(successResult)

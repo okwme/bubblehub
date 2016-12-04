@@ -33,6 +33,7 @@ export default {
   props: [
     'loc',
     'chats',
+    'users',
     'user',
     'chatVisible'
   ],
@@ -74,14 +75,32 @@ export default {
       var app = document.getElementById('chats')
       app.scrollTop = app.scrollHeight
     },
+    getKey (users = [], uid = false) {
+      var index = this.users.findIndex(function (user) {
+        console.log(user)
+        console.log(uid)
+        return user.id === uid
+      })
+      if (index > -1) {
+        return users[index]['.key']
+      } else {
+        return false
+      }
+    },
     newName () {
       var vm = this
       // var user = firebase.auth().currentUser
       var user = this.user
       if (user) {
+        var key = this.getKey(this.users, this.user.uid)
+        console.log(key)
+        var updates = {}
+        updates[key + '/username'] = vm.username
+        this.$parent.$firebaseRefs.users.update(updates)
         user.updateProfile({
           displayName: vm.username
         }).then(function () {
+
         }, function (error) {
           console.log(error)
         })
