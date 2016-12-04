@@ -3,7 +3,7 @@
     <a id="closeProfile" class="close ui-btn" @click="close()" title="Close Profile"><img src="/static/icons/arrow-r.svg"></a>
     <h1 class="h1 profile-header"><span>You</span></h1>
     <ul>
-      <li v-for="item in userCheckIns" 
+      <li v-for="item in checkins" 
       @mouseover="flip"
       @click="flip" :style="{backgroundColor:item.color, color:item.color}" :title="item.name"></li>
     </ul>
@@ -12,7 +12,27 @@
 <script>
 export default {
   name: 'Profile',
-  props: ['profileVisible'],
+  props: ['profileVisible', 'locs', 'user'],
+  computed: {
+    checkins () {
+      var vm = this
+      return this.locs.filter(function (loc) {
+        var indexAir = -1
+        var indexLand = -1
+        if (vm.$parent.isset(vm.user.locs) && vm.$parent.isset(vm.user.locs.airport)) {
+          indexAir = vm.user.locs.airport.findIndex(function (userloc) {
+            return userloc === loc['.key']
+          })
+        }
+        if (vm.$parent.isset(vm.user.locs) && vm.$parent.isset(vm.user.locs.station)) {
+          indexLand = vm.user.locs.station.findIndex(function (userloc) {
+            return userloc === loc['.key']
+          })
+        }
+        return indexLand > -1 || indexAir > -1
+      })
+    }
+  },
   data () {
     return {
       userCheckIns: [

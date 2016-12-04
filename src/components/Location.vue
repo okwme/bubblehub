@@ -2,10 +2,10 @@
   <section id="log">
     <header class="profile-header"><div><h1 class="h2">{{loc.name}}</h1><p>{{loc.type}}</p></div></header>
     <ul class="h3">
-      <li v-for="n in 40" 
+      <li v-for="user in userlist" 
       @click="showProfile()"      
       >
-        <img src="/static/icons/log.svg"><span>Username</span>
+        <img src="/static/icons/log.svg"><span>{{user.username}} ({{tally(user)}})</span>
       </li>
     </ul>
   </section>
@@ -14,11 +14,32 @@
 <script>
 export default{
   name: 'Location',
-  props: ['loc'],
+  props: ['loc', 'users'],
   methods: {
     showProfile: function () {
       console.log('show')
       this.$parent.showProfile()
+    },
+    tally (user) {
+      if (!this.$parent.isset(user.locs)) {
+        return 0
+      }
+      return (this.$parent.isset(user.locs.airport) ? user.locs.airport.length : 0) +
+      (this.$parent.isset(user.locs.station) ? user.locs.station.length : 0)
+    }
+  },
+  computed: {
+    userlist () {
+      var vm = this
+      return this.users.filter(function (user) {
+        if (!vm.$parent.isset(user.locs) || !vm.$parent.isset(user.locs[vm.loc.type])) {
+          return false
+        }
+        var index = user.locs[vm.loc.type].findIndex(function (loc) {
+          return loc === vm.loc['.key']
+        })
+        return index > -1
+      })
     }
   }
 }

@@ -30,8 +30,8 @@
           v-bind:chats='chats'
           v-bind:chatVisible='chatVisible'></chat>
 
-      <profile :profileVisible="profileVisible"></profile>
-      <location :loc="loc"></location>
+      <profile :profileVisible="profileVisible" :locs='locs' :user='me'></profile>
+      <location :loc="loc" :users='users'></location>
 
       <div id="message" ref="message" :class="{'visible': message.visible }">{{ message.text }}</div>
 
@@ -61,7 +61,7 @@ export default {
       checkInWatch: false,
       viewing: 'home',
       vrOn: true,
-      spoof: 'Paris',
+      spoof: 'London',
       sampleCities: sampleCities,
       defaultPhoto: '',
       // radius: 20,

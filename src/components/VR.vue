@@ -14,7 +14,7 @@
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
         <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
-        <img id="sky-src" :src="photo">
+       <!--  <img id="sky-src" :src="photo"> -->
       </a-assets>
       
 
@@ -38,7 +38,7 @@
       </a-entity>
 
       <!-- Background / loc.photo -->
-      <a-sky :src="photo"></a-sky>
+      <!-- <a-sky :src="photo"></a-sky> -->
 
     </a-scene>
   </div>
