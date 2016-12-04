@@ -3,13 +3,13 @@
     
     <div v-if='error'>{{error}}</div>
     <div v-else>
-
+        
         <VR v-if="vrOn" :loc="loc"></VR>
         <!-- ui -->
         <a v-show="loc && viewing=='home'" id='showChat' @click='view("chat")' class="ui-btn">
           <img src="/static/icons/chat.svg">
         </a>
-        <a id="showMyProfile" v-show="viewing=='home'" @click='view("profile")' class="ui-btn">
+        <a id="showMyProfile" v-show="viewing=='home'" @click='showProfile()' class="ui-btn">
           <img src="/static/icons/profile.svg">
         </a>
         <a id="showLocLog" v-show="loc && viewing=='home'"  @click="view('log')" class="ui-btn">
@@ -38,6 +38,8 @@
           v-bind:chats='chats'
           v-bind:chatVisible='chatVisible'></chat>
 
+      <profile :profileVisible="profileVisible"></profile>
+
     </div> <!-- endif -->
   </div> <!-- #app -->
 </template>
@@ -48,22 +50,25 @@ const db = firebase.database()
 import Chat from './components/Chat'
 import VR from './components/VR'
 import sampleCities from './sampleCities'
+import Profile from './components/Profile'
 
 export default {
   name: 'app',
   components: {
     VR,
-    Chat
+    Chat,
+    Profile
   },
   data () {
     return {
       viewing: 'home',
-      vrOn: true,
+      vrOn: false,
       spoof: 'London',
       sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 20,
       chatVisible: false,
+      profileVisible: false,
       locKey: false,
       locSlug: false,
       loc: false,
@@ -135,6 +140,9 @@ export default {
   methods: {
     view: function (a = 'home') {
       this.viewing = a === this.viewing ? 'home' : a
+    },
+    showProfile: function (bool = true) {
+      this.profileVisible = bool
     },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
@@ -323,7 +331,10 @@ export default {
 
 <style lang="scss">
 *{
-  box-sizing: border-box;
+  &, &:after, &:before{
+    margin:0; padding:0;
+    box-sizing: border-box;
+  }
 }
 html{
   font-size:12px;
@@ -332,6 +343,7 @@ body{
   padding:0;
   margin:0;
   background-color:#00A8E8;
+  font-size:16px;
 }
 #app {
 
@@ -359,6 +371,12 @@ body{
       transform:translateX(0)
     }
   }
+
+  &[data-view="profile"]{
+    #profile{
+      transform:translateY(0)
+    }
+  }
 }
 
 .ui-btn{
@@ -366,26 +384,25 @@ body{
   position:fixed;
   z-index:2;
   cursor: pointer;
+  top:1rem;
   img{
     width:32px;
   }
 }
 
 #showChat{
-    left:0;
-    top:0;
+  left:.5rem;
 }
 #showLocLog{
-  top:0;
-  right:0;
+  right:.5rem;
 }
 #showMyProfile{
-  bottom:0;
+  top:auto;
+  bottom:.5rem;
   left:50%;
-  margin-left: calc(-1rem - 32px);
+  margin-left: calc(-.75rem - 32px);
 }
 #backHome{
-  top:0;
   [data-view="chat"] &{
     right:0;
   }
