@@ -1,8 +1,9 @@
 <template>
   <article id="profile" :class="{ 'visible' : profileVisible }">
     <a id="closeProfile" class="close ui-btn" @click="close()" title="Close Profile"><img src="/static/icons/arrow-r.svg"></a>
-    <h1 class="h1 profile-header"><span>You</span></h1>
+    <h1 class="h1 profile-header"><span>{{!$parent.isset(user.username) ? '(set your username in the chat)' : user.username}}</span></h1>
     <ul>
+      <li style='width:100%;' v-if='checkins.length === 0'>You haven't checked in anywhere yet!</li>
       <li v-for="item in checkins" 
       @mouseover="flip"
       @click="flip" :style="{backgroundColor:item.color, color:item.color}" :title="item.name"></li>
@@ -129,6 +130,7 @@ export default {
   },
   methods: {
     close () {
+      this.$parent.profileId = false
       this.$parent.showProfile(false)
     },
     flip (e) {

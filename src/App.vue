@@ -30,8 +30,8 @@
           v-bind:chats='chats'
           v-bind:chatVisible='chatVisible'></chat>
 
-      <profile :profileVisible="profileVisible" :locs='locs' :user='me'></profile>
-      <location :loc="loc" :users='users'></location>
+      <profile v-if='me' :profileVisible="profileVisible" :locs='locs' :user='profileUser'></profile>
+      <location v-if='loc' :loc="loc" :users='users'></location>
 
       <div id="message" ref="message" :class="{'visible': message.visible }">{{ message.text }}</div>
 
@@ -58,6 +58,7 @@ export default {
   },
   data () {
     return {
+      profileId: false,
       checkInWatch: false,
       viewing: 'home',
       vrOn: true,
@@ -94,6 +95,13 @@ export default {
     // user: firebase.auth().currentUser
   },
   computed: {
+    profileUser () {
+      var vm = this
+      var index = this.users.findIndex(function (user) {
+        return user['.key'] === vm.profileId
+      })
+      return index < 0 ? this.me : this.users[index]
+    },
     radius () {
       return this.loc.type === 'airport' ? 20 : 32
     },
@@ -145,6 +153,7 @@ export default {
         if (!this.me) {
           this.createMe()
         }
+        this.profileId = this.me['.key']
       }
     })
   },
