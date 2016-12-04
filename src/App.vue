@@ -436,7 +436,7 @@ body{
   top:auto;
   bottom:.5rem;
   left:50%;
-  margin-left: calc(-.75rem - 32px);
+  margin-left: calc(-1rem - 16px);
 }
 #backHome{
   [data-view="chat"] &{
