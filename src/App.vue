@@ -1,40 +1,43 @@
 <template>
-  <div id="app">
-    <VR
-    :loc="loc"></VR>
-    <div v-if='error'>
-      {{error}}
-    </div>
+  <div id="app" :data-view="viewing">
+    
+    <div v-if='error'>{{error}}</div>
     <div v-else>
-      <a
-      v-show='loc'
-      id='showChat' 
-      @click.prevent='chatVisible = !chatVisible'>
-        Chat {{chatVisible ? 'Close' : 'Open'}}
-      </a>
+
+        <VR v-if="vrOn" :loc="loc"></VR>
+        <!-- ui -->
+        <a v-show="loc" id='showChat' @click='view("chat")'>
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <path fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M27.5,21.9 C29.7,19.8,31,17,31,14c0-6.8-6.7-12-15-12S1,7.2,1,14c0,6.8,6.7,12.3,15,12.3c1.5,0,2.9-0.2,4.2-0.5L28,29L27.5,21.9z" stroke-linejoin="miter"></path> </g></svg>
+        </a>
+        <a id="showMyProfile" v-show="viewing=='home'" @click='view("profile")'>
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"><g transform="translate(0, 0)"> <circle data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="10" cy="12" r="2" stroke-linejoin="miter"></circle> <circle data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="22" cy="12" r="2" stroke-linejoin="miter"></circle> <path data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M11,20 c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5" stroke-linejoin="miter"></path> <circle fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" cx="16" cy="16" r="15" stroke-linejoin="miter"></circle> </g></svg>
+        </a>
+
+        <a v-show="loc" id="showLocLog" @click="view('log')">
+          <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32"> <g transform="translate(0, 0)"> <polyline fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" points="4,4 28,4 23,12 28,20 4,20 " stroke-linejoin="miter"></polyline> <line data-color="color-2" fill="none" stroke="#444444" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" x1="4" y1="1" x2="4" y2="31" stroke-linejoin="miter"></line> </g> </svg>
+        </a>
+
+        <div v-if='loc'>
+          <h2>
+          Welcome to
+          </h2>
+          <h1>
+            {{loc.name}}, {{loc.country_code}}
+          </h1>
+        </div>
+        <div v-else>
+          <h1>Please wait while we locate you</h1>
+        </div>
 
       <chat 
-      v-if='loc'
-      v-bind:loc='loc'
-      v-bind:user='user'
-      v-bind:users='users'
-      v-bind:chats='chats'
-      v-bind:chatVisible='chatVisible'></chat>
+          v-if='loc'
+          v-bind:loc='loc'
+          v-bind:user='user'
+          v-bind:chats='chats'
+          v-bind:chatVisible='chatVisible'></chat>
 
-      <div v-if='loc'>
-        <h2>
-        Welcome to
-        </h2>
-        <h1>
-          {{loc.name}}, {{loc.country_code}}
-        </h1>
-      </div>
-      <div v-else>
-        <h1>Please wait while we locate you</h1>
-      </div>
-
-    </div>
-  </div>
+    </div> <!-- endif -->
+  </div> <!-- #app -->
 </template>
 
 <script>
@@ -52,8 +55,9 @@ export default {
   },
   data () {
     return {
+      viewing: 'home',
       vrOn: true,
-      spoof: 'New York',
+      spoof: 'London',
       sampleCities: sampleCities,
       defaultPhoto: '',
       radius: 20,
@@ -127,8 +131,8 @@ export default {
     })
   },
   methods: {
-    checkIn () {
-      console.log('check in')
+    view: function (a = 'home') {
+      this.viewing = a === this.viewing ? 'home' : a
     },
     getPhoto (loc, callback = function () {}) {
       this.$http.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=502dd540a28d1e7ab1f2ae936dfe2538&sort=interestingness-desc&group_id=44671723%40N00&lat=' + loc.latitude + '&lon=' + loc.longitude + '&radius=' + this.radius + '&format=json&extras=url_k&nojsoncallback=1').then(function (successResult) {
@@ -331,14 +335,28 @@ body{
   text-align: center;
   color: #2c3e50;
   height: 100%;
-  
-  #showChat{
+
+  &[data-view="chat"]{
+    #chat{
+      transform:translateX(0);
+    }
+    #vr,#log{
+      transform:translateX(100%)
+    }
+  }
+}
+
+svg{
+  *{
+    stroke:white;
+  }
+}
+
+#showChat{
     cursor: pointer;
     z-index:2;
     position:absolute;
     left:10px;
     top:10px;
   }
-
-}
 </style>
