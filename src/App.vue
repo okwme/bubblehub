@@ -4,7 +4,7 @@
     <div v-if='error'>{{error}}</div>
     <div v-else>
         
-        <VR v-if="vrOn" :loc="loc"></VR>
+        <VR v-if="vrOn" :loc="loc" :checkInWatch='checkInWatch'></VR>
         <!-- ui -->
         <a v-show="loc && viewing=='home'" id='showChat' @click='view("chat")' class="ui-btn">
           <img src="/static/icons/chat.svg">
@@ -58,9 +58,10 @@ export default {
   },
   data () {
     return {
+      checkInWatch: false,
       viewing: 'home',
       vrOn: true,
-      spoof: 'New York',
+      spoof: 'Paris',
       sampleCities: sampleCities,
       defaultPhoto: '',
       // radius: 20,
@@ -245,7 +246,7 @@ export default {
       locCopy.users.push(userKey)
       delete locCopy['.key']
       db.ref('locs/' + this.loc['.key']).set(locCopy)
-
+      this.checkInWatch = true
       // updates[key + '/username'] = vm.username
       // this.$parent.$firebaseRefs.users.update(updates)
       // console.log(userKey)

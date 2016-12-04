@@ -3,13 +3,18 @@
     <div id="greeting" v-if='loc' class="watermark" :class='{"set": !$parent.greetingVisible}'>
       <h2 v-if="$parent.greetingVisible">Welcome to</h2>
       <h1>{{loc.name}}, {{loc.country_code}} <span class='swatch' :style="{'background-color' : loc.color}">&nbsp;</span></h1>
+      <div v-if='checkInPopup' @click='checkInPopup = false'>
+      <h2>You've just checked in to {{loc.name}}!</h2>
+      You'll be able to see this {{loc.type}}'s color swatch in your prfile now!<br/>
+      Find & click the {{loc.type === 'airport' ? 'paper plane' : 'bus'}} to see more bubbles from your area!
+      </div>
     </div>
     <a-scene id="scene" vr-mode-ui="enabled: false">
       <a-assets>
         <!--<img id="highlight1" src="../assets/radial-highlight.png">-->
         <a-asset-item id="plane-obj" src="/static/plane.obj"></a-asset-item>
         <a-asset-item id="bus-obj" src="/static/bus.obj"></a-asset-item>
-        <!-- <img id="sky-src" :src="photo"> -->
+        <img id="sky-src" :src="photo">
       </a-assets>
       
 
@@ -33,7 +38,7 @@
       </a-entity>
 
       <!-- Background / loc.photo -->
-      <!-- <a-sky :src="photo"></a-sky> -->
+      <a-sky :src="photo"></a-sky>
 
     </a-scene>
   </div>
@@ -46,9 +51,10 @@
 const AFRAME = require('aframe')
 export default{
   name: 'VR',
-  props: ['loc'],
+  props: ['loc', 'checkInWatch'],
   data () {
     return {
+      checkInPopup: false,
       loading: true,
       topAmount: 20,
       animOn: true,
@@ -58,6 +64,9 @@ export default{
     }
   },
   watch: {
+    checkInWatch () {
+      this.checkInPopup = true
+    },
     loc () {
       if (this.loc && this.loc.photos) {
         this.switchPhoto()
