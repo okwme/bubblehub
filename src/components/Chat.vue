@@ -3,7 +3,7 @@
   <div id='chats'>
     <div v-for="chat in filteredChats">
       <a v-if='username === "admin"' @click.stop='removeChat(chat[".key"])'>x</a>
-      {{chat.username}}: {{chat.msg}} 
+      <a @click.prevent="$parent.switchProfile($parent.getUserKey(chat.userkey))">{{chat.username}}</a>: {{chat.msg}} 
     </div>
   </div>
   <div class='inputs h3'>
@@ -16,6 +16,8 @@
 <script>
 // import firebase from '../firebase'
 // const db = firebase.database()
+var randomEmoji = require('random-emoji')
+
 export default {
 
   name: 'Chat',
@@ -70,7 +72,10 @@ export default {
     this.newChat()
     this.username = this.user.displayName
     if (!this.username) {
-      this.username = 'n00b-' + Math.floor(Math.random() * 999)
+      var emojis = randomEmoji.random({count: 3}).map(function (item) {
+        return item.character
+      }).join('')
+      this.username = emojis
       this.newName()
     }
   },
@@ -105,6 +110,7 @@ export default {
       // var vm = this
       this.currentMessage = ''
       var chat = {
+        userkey: this.user.uid,
         username: this.username,
         msg: '',
         time: 0
@@ -114,6 +120,7 @@ export default {
     updateChat () {
       // var date = new Date()
       var chat = {
+        userkey: this.user.uid,
         username: this.username,
         msg: this.currentMessage,
         time: (+new Date())}
@@ -161,6 +168,7 @@ export default {
     // height: calc(100vh - 110px);
     a{
       cursor: pointer;
+      text-decoration: underline;
     }
   }
   .inputs{

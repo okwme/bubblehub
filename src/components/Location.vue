@@ -8,7 +8,7 @@
       </div>
     </header>
     <ul class="h3">
-      <li v-for="user in userlist" @click="showProfile(user['.key'])">
+      <li v-for="user in userlist" @click="$parent.switchProfile(user['.key'])">
         <img src="/static/icons/log.svg"><span>{{user.username}} <sup>{{tally(user)}}</sup></span>
       </li>
     </ul>
@@ -20,11 +20,6 @@ export default{
   name: 'Location',
   props: ['loc', 'users'],
   methods: {
-    showProfile: function (key) {
-      console.log('show')
-      this.$parent.profileId = key
-      this.$parent.showProfile()
-    },
     tally (user) {
       if (!this.$parent.isset(user.locs)) {
         return 0

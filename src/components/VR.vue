@@ -1,8 +1,8 @@
 <template>
   <div id="vr">
-    <div id="greeting" v-if='loc' class="watermark" :class='{"set": !$parent.greetingVisible}'>
-      <h2 v-if="$parent.greetingVisible">Welcome to</h2>
+    <div id="greeting" v-if='loc' class="watermark" >
       <h1>{{loc.name}}, {{loc.country_code}} <span class='swatch' :style="{'background-color' : loc.color}">&nbsp;</span></h1>
+      <h2><a style='cursor:pointer;' @click.prevent='switchClick()'>See New Hub</a></h2>
     </div>
 
     <a-scene id="scene" vr-mode-ui="enabled: false">
@@ -25,19 +25,50 @@
         repeat="indefinite"></a-animation>
       </a-entity>
       <!-- camera / cursor -->
-      <a-entity camera="userHeight: 1.6" look-controls>
-        <a-cursor v-if="loc"></a-cursor>
+      <a-entity position="0 2.2 4">
+    <a-entity camera look-controls wasd-controls>
+      <a-entity v-if='loc' position="0 0 -3"
+                geometry="primitive: ring; radiusOuter: 0.30;
+                          radiusInner: 0.20;"
+                material="color: cyan; shader: flat"
+                cursor="maxDistance: 30; fuse: true">
+        <a-animation begin="click" easing="ease-in" attribute="scale"
+             fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+        <a-animation begin="fusing" easing="ease-in" attribute="scale"
+             fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
       </a-entity>
+    </a-entity>
+  </a-entity>
+<!-- 
+
+      <a-entity camera="userHeight: 1.6" look-controls>
+            <a-entity position="0 0 -1"
+                geometry="primitive: ring; radiusOuter: 0.10;
+                          radiusInner: 0.07;"
+                material="color: black; "
+                cursor=" fuse: true;">
+        <a-animation begin="click" easing="ease-in" attribute="scale"
+             fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+        <a-animation begin="fusing" easing="ease-in" attribute="scale"
+             fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
+      </a-entity>
+      </a-entity> -->
       <!-- Background / loc.photo -->
       <a-sky :src="photo"></a-sky>
     </a-scene>
 
     <!-- modal -->
-    <div id="firstCheckInModal" @click='checkInPopup = false' :class="[{'visible':checkInPopup}, 'modal']">
-      <div class="inner">
+    <div id="firstCheckInModal" @click='checkInPopup = false; first = false' :class="[{'visible':(checkInPopup && loc)}, 'modal']">
+      <div v-if='first && loc' class="inner">
+        <h2 class="h3"> Welcome to<br> {{loc.name}}!</h2>
+        <span class="swatch" :style="{backgroundColor:loc.color}"></span> is the color of this Hub!<br><br>
+        Focus & Click on the {{loc.type === 'airport' ? 'Paper Plane' : 'Wheel'}} to see a new Bubble.<br>Refresh the page to see a new Hub.<br><br>
+        (Click anywhere to close this popup)
+      </div>
+      <div v-else class="inner">
         <h2 class="h3">You checked-in to<br> {{loc.name}}!</h2>
         <span class="swatch" :style="{backgroundColor:loc.color}"></span> was added to your profile!<br><br>
-        Click the {{loc.type === 'airport' ? 'paper plane' : 'bus'}} again for new scenes
+        Search for the {{loc.type === 'airport' ? 'Paper Plane' : 'Wheel'}} and click again for a new Bubble.
       </div>
     </div>
 
@@ -54,7 +85,9 @@ export default{
   props: ['loc', 'checkInWatch'],
   data () {
     return {
-      checkInPopup: false,
+      clickListener: false,
+      checkInPopup: true,
+      first: true,
       loading: true,
       topAmount: 20,
       animOn: true,
@@ -69,19 +102,29 @@ export default{
     }
   },
   watch: {
-    checkInWatch () {
-      this.checkInPopup = true
-      setTimeout(function () { this.checkInPopup = false }, 4000)
+    checkInWatch (val) {
+      this.checkInPopup = val
+      if (val) {
+        setTimeout(function () { this.checkInPopup = false }, 4000)
+      }
     },
-    loc () {
-      if (this.loc && this.loc.photos) {
+    loc (newloc) {
+      console.log('WATCH: loc changed')
+      console.log(newloc)
+      if (newloc && newloc.photos && newloc.photos.length > 0) {
+        console.log('switch ')
         this.switchPhoto()
-        document.getElementById('toy').setAttribute('material', 'color', this.loc.color)
+        document.getElementById('toy').setAttribute('material', 'color', newloc.color)
         this.$parent.showGreeting()
       }
     }
   },
   methods: {
+    switchClick () {
+      // console.log('switch click clicked')
+      this.photo = ''
+      this.$parent.switchCities()
+    },
     rand () {
       var foo = Math.floor(Math.random() * 12) - 6
       return foo < 2 && foo > 0 ? 2 : foo > -2 && foo < 0 ? -2 : foo
@@ -90,14 +133,16 @@ export default{
       this.planePosition = this.rand() + ' ' + this.rand() + ' ' + this.rand()
     },
     switchPhoto (callback = function () {}) {
+      // console.log('switch photo')
       var vm = this
       vm.loading = true
-      var topAmount = this.loc.photos.length > this.topAmount ? this.loc.photos.length : this.topAmount
-      var photoId = this.loc.photos[Math.floor(Math.random() * topAmount)].id
+      // var topAmount = this.loc.photos.length > this.topAmount ? this.loc.photos.length - 1 : this.topAmount
+      var photoId = this.loc.photos[Math.floor(Math.random() * this.loc.photos.length)].id
       if (photoId === this.currentPhotoId) {
         this.switchPhoto()
       } else {
         this.getFlick(photoId, function (url) {
+          // console.log('get flick')
           var img = new Image()
           img.onload = function () {
             vm.photo = url
@@ -121,20 +166,19 @@ export default{
         }
         callback(photo.source)
       }, function (errorResult) {
-        console.log(errorResult)
+        // console.log(errorResult)
       })
     }
   },
   mounted () {
-    console.log('mounted')
     var vm = this
     // console.log(AFRAME.version)
-    console.log(AFRAME)
+    // console.log(AFRAME)
     if (typeof (AFRAME.components['toy-color']) !== 'undefined') {
-      console.log('plane already defined!')
+      // console.log('plane already defined!')
       return
     } else {
-      console.log('pane not already defined!')
+      // console.log('pane not already defined!')
     }
     AFRAME.registerComponent('toy-color', {
       init: function () {
@@ -144,19 +188,24 @@ export default{
     AFRAME.registerComponent('check-in', {
       init: function () {
         // const COLORS = ['red', 'green', 'blue']
-        this.el.addEventListener('click', function () {
-          if (vm.loading) {
-            return
-          }
-          var aframeEl = this
-          // const randomIndex = Math.floor(Math.random() * COLORS.length)
-          this.setAttribute('material', 'color', '#00A8E8')
-          vm.$parent.checkIn()
-          vm.switchPhoto(function () {
-            vm.changePosition()
-            aframeEl.setAttribute('material', 'color', vm.loc.color)
+        if (!vm.clickListener) {
+          // console.log('ADD EVENT LISTENER')
+          vm.clickListener = this.el.addEventListener('click', function () {
+            // console.log('AIRPLANE WAS CLICKED')
+            if (vm.loading) {
+              // console.log('still loading return false')
+              return
+            }
+            var aframeEl = this
+            // const randomIndex = Math.floor(Math.random() * COLORS.length)
+            this.setAttribute('material', 'color', '#00A8E8')
+            vm.$parent.checkIn()
+            vm.switchPhoto(function () {
+              vm.changePosition()
+              aframeEl.setAttribute('material', 'color', vm.loc.color)
+            })
           })
-        })
+        }
       }
     })
   }

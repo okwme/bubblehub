@@ -2,11 +2,15 @@
   <article id="profile" :class="{ 'visible' : profileVisible }">
     <a id="closeProfile" class="close ui-btn" @click="close()" title="Close Profile"><img src="/static/icons/arrow-r.svg"></a>
     <h1 class="h1 profile-header"><span>{{!$parent.isset(user.username) ? '(set your username in the chat)' : user.username}}</span></h1>
+    <h2> {{checkins.length}} Hubs visited</h2>
     <ul>
       <li style='width:100%;' v-if='checkins.length === 0'>You haven't checked in anywhere yet!</li>
       <li v-for="item in checkins" 
+      :locid="item['.key']"
+      :title="item.name"
       @mouseover="flip"
-      @click="flip" :style="{backgroundColor:item.color, color:item.color}" :title="item.name"></li>
+      @click="locClick(item)" 
+      :style="{backgroundColor:item.color, color:item.color}"></li>
     </ul>
   </article>
 </template>
@@ -16,9 +20,6 @@ export default {
   props: ['profileVisible', 'locs', 'user'],
   computed: {
     checkins () {
-      if (this.user.username === 'admin') {
-        return this.userCheckIns
-      }
       var vm = this
       return this.locs.filter(function (loc) {
         var indexAir = -1
@@ -39,106 +40,22 @@ export default {
   },
   data () {
     return {
-      userCheckIns: [
-        {
-          name: 'London Heathrow, GB',
-          color: '#2AFC98'
-        },
-        {
-          name: 'Tegel',
-          color: '#9FA0C3'
-        },
-        {
-          name: "O'Hare",
-          color: '#6D1A36'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#16C172'
-        },
-        {
-          name: 'Tegel',
-          color: 'green'
-        },
-        {
-          name: "O'Hare",
-          color: '#5E6973'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#7CFFC4'
-        },
-        {
-          name: 'Tegel',
-          color: '#3B60E4'
-        },
-        {
-          name: "O'Hare",
-          color: '#BCF8EC'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#FF570A'
-        },
-        {
-          name: 'Tegel',
-          color: '#420039'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#F433AB'
-        },
-        {
-          name: 'Tegel',
-          color: '#8C5E58'
-        },
-        {
-          name: "O'Hare",
-          color: '#A833B9'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#41292C'
-        },
-        {
-          name: 'Tegel',
-          color: '#FD3E81'
-        },
-        {
-          name: "O'Hare",
-          color: 'blue'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#A7CAB1'
-        },
-        {
-          name: 'Tegel',
-          color: '#F4ECD6'
-        },
-        {
-          name: "O'Hare",
-          color: '#49D49D'
-        },
-        {
-          name: 'London Heathrow, GB',
-          color: '#F58549'
-        },
-        {
-          name: 'Tegel',
-          color: '#05F140'
-        }
-      ]
     }
   },
   methods: {
+    locClick (item) {
+      if (!this.$parent.isMobile) {
+        this.$parent.switchCities(item['.key'])
+        this.close()
+      }
+    },
     close () {
       this.$parent.profileId = false
       this.$parent.showProfile(false)
     },
     flip (e) {
       // message
-      this.$parent.showMessage(e.target.title, 2000)
+      this.$parent.showMessage(e.target.title, e.target.attributes.locid.value, 2000)
       // add Class
       e.target.setAttribute('data-flipped', true)
       setTimeout(() => e.target.setAttribute('data-flipped', false), 510)
