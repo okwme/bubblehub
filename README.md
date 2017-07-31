@@ -3,6 +3,8 @@
 ![checkin](https://github.com/okwme/bubblehub/blob/master/static/checkin-gif.gif "Check In")
 ![panels](https://github.com/okwme/bubblehub/blob/master/static/panels-gif.gif "Panels")
 
+[BubbleHub.Club](https://bubblehub.club/)
+
 VR location collector and real time chat built using [AFrame](https://github.com/aframevr/aframe), [Vue.js](https://github.com/vuejs/vue) and [Google Firebase](https://github.com/firebase/).
 
 Completed in 24 hours w [Everett Williams](https://github.com/evvvritt).
