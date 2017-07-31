@@ -1,7 +1,7 @@
 # Bubble Hub
 
-![checkin](https://bubblehub.club/static/checkin-gif.gif "Check In")
-![panels](https://bubblehub.club/static/panels-gif.gif "Panels")
+![checkin](https://github.com/okwme/bubblehub/blob/master/static/checkin-gif.gif "Check In")
+![panels](https://github.com/okwme/bubblehub/blob/master/static/panels-gif.gif "Panels")
 
 VR location collector and real time chat built using Vue.js and Google Firebase.
 
